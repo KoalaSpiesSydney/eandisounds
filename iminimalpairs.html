@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Long vs Short i (/iː/ vs /ɪ/) – Minimal Pair Checker</title>
+<style>
+  :root{
+    --bg:#f5f5f5;
+    --bar:#1e1f21;
+    --panel:#ffffff;
+    --ink:#1e1e1e;
+    --muted:#6b737a;
+    --accent:#ff7a1a;
+    --line:rgba(0,0,0,.12);
+    --shadow:0 10px 28px rgba(0,0,0,.14);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+  }
+  header{
+    background:var(--bar);
+    color:#fff;
+    padding:18px 16px;
+  }
+  header h1{margin:0;font-size:18px;font-weight:700}
+  header p{margin:6px 0 0;color:rgba(255,255,255,.75);font-size:13px}
+  main{max-width:900px;margin:18px auto;padding:0 16px}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px;
+  }
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .btn{
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:999px;
+    padding:12px 16px;
+    font-weight:700;
+    cursor:pointer;
+    user-select:none;
+  }
+  .btn.primary{background:var(--accent);border-color:transparent;color:#fff}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 12px;border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-size:13px;
+  }
+  .meter{
+    height:10px;border-radius:999px;
+    background:rgba(0,0,0,.08);
+    overflow:hidden;flex:1;min-width:220px;
+    border:1px solid var(--line);
+  }
+  .meter > div{height:100%;width:0%}
+  .result{
+    margin-top:14px;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,.02);
+  }
+  .big{font-size:18px;font-weight:800;margin:0 0 6px}
+  .small{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:12px;
+    margin-top:12px;
+  }
+  select{
+    padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+    background:#fff;font-weight:700;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Long vs Short i: /iː/ vs /ɪ/ (Minimal Pairs)</h1>
+  <p>Modern English Australia · Koala Spies Sydney</p>
+</header>
+
+<main>
+  <div class="card">
+    <div class="row">
+      <button id="startBtn" class="btn primary">Enable Microphone</button>
+      <button id="recBtn" class="btn" disabled>Hold to Speak</button>
+      <button id="resetBtn" class="btn" disabled>Reset</button>
+      <span class="pill" id="status">Status: not started</span>
+    </div>
+
+    <div class="grid">
+      <div>
+        <p class="small" style="margin:10px 0 6px">Target word (student says this)</p>
+        <select id="target">
+          <option value="short">ship (/ɪ/)</option>
+          <option value="long">sheep (/iː/)</option>
+          <option value="short">bit (/ɪ/)</option>
+          <option value="long">beat (/iː/)</option>
+          <option value="short">live (/ɪ/)</option>
+          <option value="long">leave (/iː/)</option>
+        </select>
+      </div>
+
+      <div>
+        <p class="small" style="margin:10px 0 6px">Input level</p>
+        <div class="row">
+          <div class="meter" aria-label="input meter"><div id="levelFill"></div></div>
+          <span class="pill" id="levelTxt">0.00</span>
+        </div>
+        <p class="small" style="margin-top:8px">Aim for a steady voice (not whispering).</p>
+      </div>
+    </div>
+
+    <div class="result" id="resultBox" style="display:none">
+      <p class="big" id="verdict">—</p>
+      <p class="small" id="detail">—</p>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  const startBtn = document.getElementById("startBtn");
+  const recBtn = document.getElementById("recBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const statusEl = document.getElementById("status");
+  const levelFill = document.getElementById("levelFill");
+  const levelTxt = document.getElementById("levelTxt");
+  const targetSel = document.getElementById("target");
+  const resultBox = document.getElementById("resultBox");
+  const verdictEl = document.getElementById("verdict");
+  const detailEl = document.getElementById("detail");
+
+  let ctx, mic, analyser, data;
+  let rafId = null;
+
+  // Recording buffer (we're not saving a file; we just sample energy over time)
+  let listening = false;
+  let samples = []; // {t, rms}
+  let t0 = 0;
+
+  // Tunable thresholds (reasonable defaults for /ɪ/ vs /iː/)
+  const VAD_ON = 0.03;   // rms threshold for "speech present"
+  const VAD_OFF = 0.02;  // rms threshold for "speech ended"
+  const MIN_SEG_MS = 60; // ignore tiny blips
+  const SHORT_MAX_MS = 180; // <= this is likely /ɪ/
+  const LONG_MIN_MS = 220;  // >= this is likely /iː/
+  const MAX_LISTEN_MS = 1200;
+
+  function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
+
+  function rmsFromTimeDomain(arr){
+    let sum = 0;
+    for (let i=0;i<arr.length;i++){
+      const v = (arr[i]-128)/128;
+      sum += v*v;
+    }
+    return Math.sqrt(sum/arr.length);
+  }
+
+  function tick(){
+    analyser.getByteTimeDomainData(data);
+    const rms = rmsFromTimeDomain(data);
+
+    // meter
+    const pct = Math.max(0, Math.min(1, rms * 6)); // purely for UI scaling
+    levelFill.style.width = (pct * 100).toFixed(1) + "%";
+    levelTxt.textContent = rms.toFixed(3);
+
+    if (listening){
+      const t = performance.now() - t0;
+      samples.push({ t, rms });
+
+      if (t > MAX_LISTEN_MS){
+        stopListening();
+        analyseAndReport();
+      }
+    }
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  async function initMic(){
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    mic = ctx.createMediaStreamSource(stream);
+
+    analyser = ctx.createAnalyser();
+    analyser.fftSize = 2048;
+    data = new Uint8Array(analyser.fftSize);
+
+    mic.connect(analyser);
+
+    if (!rafId) tick();
+
+    setStatus("microphone enabled");
+    startBtn.disabled = true;
+    recBtn.disabled = false;
+    resetBtn.disabled = false;
+  }
+
+  function reset(){
+    listening = false;
+    samples = [];
+    resultBox.style.display = "none";
+    verdictEl.textContent = "—";
+    detailEl.textContent = "—";
+    setStatus(startBtn.disabled ? "ready" : "not started");
+  }
+
+  function startListening(){
+    reset();
+    listening = true;
+    t0 = performance.now();
+    setStatus("listening… speak now");
+  }
+
+  function stopListening(){
+    listening = false;
+    setStatus("analysing…");
+  }
+
+  function findVoicedSegments(){
+    // Simple hysteresis VAD over RMS to find "speech present" regions.
+    const segs = [];
+    let inSeg = false;
+    let segStart = 0;
+
+    for (let i=0;i<samples.length;i++){
+      const {t, rms} = samples[i];
+
+      if (!inSeg && rms >= VAD_ON){
+        inSeg = true;
+        segStart = t;
+      } else if (inSeg && rms <= VAD_OFF){
+        const segEnd = t;
+        if (segEnd - segStart >= MIN_SEG_MS) segs.push([segStart, segEnd]);
+        inSeg = false;
+      }
+    }
+    // if still in segment at end
+    if (inSeg){
+      const lastT = samples.length ? samples[samples.length-1].t : 0;
+      if (lastT - segStart >= MIN_SEG_MS) segs.push([segStart, lastT]);
+    }
+    return segs;
+  }
+
+  function analyseAndReport(){
+    const segs = findVoicedSegments();
+    if (!segs.length){
+      resultBox.style.display = "block";
+      verdictEl.textContent = "No clear vowel detected";
+      detailEl.textContent = "Try again: speak a little louder and hold the vowel steady.";
+      setStatus("ready");
+      return;
+    }
+
+    // Take the longest voiced segment as best proxy for vowel length
+    let longest = segs[0];
+    for (const s of segs){
+      if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
+    }
+    const dur = longest[1] - longest[0]; // ms
+
+    // Classification
+    let label = "unclear";
+    if (dur <= SHORT_MAX_MS) label = "short";
+    if (dur >= LONG_MIN_MS) label = "long";
+
+    const expected = targetSel.value; // "short" or "long"
+    const expectedTxt = expected === "long" ? "LONG /iː/" : "SHORT /ɪ/";
+    const heardTxt = label === "long" ? "LONG /iː/" : label === "short" ? "SHORT /ɪ/" : "UNCLEAR";
+
+    let verdict;
+    if (label === "unclear"){
+      verdict = "Unclear length";
+    } else if (label === expected){
+      verdict = "Correct length: " + heardTxt;
+    } else {
+      verdict = "Wrong length: sounded like " + heardTxt;
+    }
+
+    // Confidence (simple distance from boundary)
+    let conf = 0.5;
+    if (label === "short") conf = Math.max(0.2, Math.min(0.95, (SHORT_MAX_MS - dur) / SHORT_MAX_MS + 0.35));
+    if (label === "long") conf = Math.max(0.2, Math.min(0.95, (dur - LONG_MIN_MS) / LONG_MIN_MS + 0.35));
+    conf = Math.round(conf * 100);
+
+    resultBox.style.display = "block";
+    verdictEl.textContent = verdict;
+    detailEl.textContent =
+      `Expected: ${expectedTxt}. Detected voiced duration: ${Math.round(dur)} ms. Confidence: ${conf}%. ` +
+      (label === "short" ? "For /iː/, stretch the vowel longer." :
+       label === "long" ? "For /ɪ/, keep it shorter and lighter." :
+       "Try again with a steady vowel and normal volume.");
+
+    setStatus("ready");
+  }
+
+  // Events
+  startBtn.addEventListener("click", async () => {
+    try { await initMic(); }
+    catch(e){
+      setStatus("microphone blocked");
+      alert("Microphone access was blocked. Please allow mic permission and reload.");
+    }
+  });
+
+  // Hold-to-speak behavior (mouse + touch)
+  const holdStart = (e) => {
+    e.preventDefault();
+    if (!ctx) return;
+    startListening();
+  };
+  const holdEnd = (e) => {
+    e.preventDefault();
+    if (!listening) return;
+    stopListening();
+    analyseAndReport();
+  };
+
+  recBtn.addEventListener("mousedown", holdStart);
+  recBtn.addEventListener("mouseup", holdEnd);
+  recBtn.addEventListener("mouseleave", holdEnd);
+
+  recBtn.addEventListener("touchstart", holdStart, {passive:false});
+  recBtn.addEventListener("touchend", holdEnd, {passive:false});
+  recBtn.addEventListener("touchcancel", holdEnd, {passive:false});
+
+  resetBtn.addEventListener("click", reset);
+
+  setStatus("not started");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title> E and I in English – Modern English Australia</title>
+
+  <style>
+    :root {
+      --bg:#f2f5f6;
+      --card:#1e1f21;
+      --accent:#009688;
+      --accent-light:#33bba6;
+      --ink:#1c1e20;
+      --ink-light:#f5f5f5;
+      --success:#20c997;
+      --error:#e74c3c;
+      --shadow:0 6px 24px rgba(0,0,0,.25);
+      --radius:14px;
+      --line:rgba(0,0,0,.12);
+      --muted:#6b737a;
+    }
+
+    * { box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+      -webkit-text-size-adjust:100%;
+      text-rendering:optimizeLegibility;
+    }
+
+    /* ===== Header (sticky) ===== */
+    header {
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:var(--card);
+      color:var(--accent);
+      text-align:center;
+      padding:1.05rem 1rem;
+      font-size:1.35rem;
+      font-weight:800;
+      letter-spacing:2px;
+      border-bottom:1px solid var(--line);
+    }
+    header span {
+      color:var(--ink-light);
+      font-weight:300;
+      display:block;
+      font-size:0.95rem;
+      letter-spacing:3px;
+      margin-top:0.35rem;
+    }
+
+    @media (min-width: 768px){
+      header { font-size:1.5rem; padding:1.2rem 1rem; }
+      header span { font-size:1rem; }
+    }
+
+    /* ===== Sticky QR (top-left in header) ===== */
+    .qr-wrap{
+      position:absolute;
+      left:10px;
+      top:10px;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      z-index:60;
+    }
+
+    .qr-btn{
+      background:rgba(20, 1, 1, 0.1);
+      color:var(--ink-light);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:10px;
+      padding:0.5rem 0.8rem;
+      font-weight:800;
+      font-size:0.9rem;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.25);
+      transition:transform .2s ease, background .2s ease, border-color .2s ease;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+      line-height:1;
+      white-space:nowrap;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .qr-btn:hover{
+        background:rgba(255,255,255,.16);
+        border-color:rgba(255,255,255,.28);
+        transform:translateY(-1px);
+      }
+    }
+    .qr-btn:active{ transform:translateY(0); }
+    .qr-btn:focus-visible{
+      outline:none;
+      box-shadow:0 0 0 3px rgba(0,150,136,0.22), 0 2px 8px rgba(0,0,0,.25);
+    }
+
+    .qr-panel{
+      display:none;
+      background:rgba(30,31,33,.98);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:14px;
+      padding:10px;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);
+      width:160px;
+    }
+    .qr-panel.open{ display:block; }
+
+    .qr-title{
+      color:var(--ink-light);
+      font-size:0.8rem;
+      font-weight:700;
+      text-align:center;
+      margin:0 0 8px;
+      opacity:.9;
+      letter-spacing:.2px;
+    }
+    #qrcode{
+      width:140px;
+      height:140px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    /* Keep header text from colliding with QR on tiny screens */
+    @media (max-width: 420px){
+      header{ padding-left:72px; padding-right:12px; }
+      .qr-wrap{ left:8px; top:8px; }
+      .qr-panel{ width:150px; }
+      #qrcode{ width:132px; height:132px; }
+    }
+
+    /* ===== Main Layout ===== */
+    main {
+      flex:1;
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:1rem 1rem 2.25rem;
+    }
+    @media (min-width: 768px){
+      main { padding:1rem 2rem 3rem; }
+    }
+
+    /* ===== Instructions Section ===== */
+    .instructions {
+      margin:1.25rem auto;
+      max-width:900px;
+      line-height:1.6;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:1.25rem 1.25rem;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px){
+      .instructions { padding:1.5rem 2rem; }
+    }
+
+    .instructions h2 {
+      color:var(--accent);
+      text-align:center;
+      margin:0 0 0.75rem;
+    }
+    .instructions p { margin:0.75rem 0; }
+
+    .links {
+      display:flex;
+      justify-content:center;
+      gap:0.9rem;
+      margin:2rem 0 0.75rem;
+      flex-wrap:wrap;
+    }
+
+    .btn {
+      display:inline-block;
+      background:var(--accent);
+      color:#fff;
+      padding:0.8rem 1.5rem;
+      border-radius:10px;
+      font-weight:800;
+      text-decoration:none;
+      font-size:1rem;
+      box-shadow:0 3px 10px rgba(0,0,0,0.2);
+      transition:transform .2s ease, background .2s ease;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    @media (hover:hover) and (pointer:fine){
+      .btn:hover {
+        background:var(--accent-light);
+        transform:translateY(-2px);
+      }
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      margin-top:auto;
+      text-align:center;
+      background:var(--card);
+      color:var(--ink-light);
+      padding:1.1rem 1rem;
+      font-size:0.9rem;
+      border-top:1px solid var(--line);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      * { transition:none !important; scroll-behavior:auto !important; }
+    }
+    /* ===== Option styling (grey / italic, highlight when chosen) ===== */
+
+/* Base look for all options */
+label{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin:0 .45rem .25rem 0;
+  cursor:pointer;
+}
+
+label input[type="radio"]{
+  margin:0;
+}
+
+/* The visible option text */
+label span{
+  display:inline-block;
+  padding:.12rem .5rem;
+  border-radius:999px;
+  background:rgba(0,0,0,.06);   /* light grey pill */
+  color:var(--muted);
+  font-style:italic;
+  transition:background .15s ease, color .15s ease, font-style .15s ease, box-shadow .15s ease;
+}
+
+/* When selected: “highlighted” */
+label input[type="radio"]:checked + span{
+  background:rgba(0,150,136,.14);     /* soft teal highlight */
+  color:var(--ink);
+  font-style:normal;
+  box-shadow:0 0 0 2px rgba(0,150,136,.18);
+}
+
+/* Keyboard focus */
+label input[type="radio"]:focus-visible + span{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(0,150,136,.25);
+}
+@media (max-width: 480px){
+  label span{
+    padding:.2rem .65rem;
+  }
+}
+
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <!-- Sticky QR generator (top-left) -->
+    <div class="qr-wrap">
+      <button type="button" class="qr-btn" id="qrToggle" aria-expanded="false" aria-controls="qrPanel">
+        QR
+      </button>
+
+      <div class="qr-panel" id="qrPanel" role="dialog" aria-label="QR code" aria-hidden="true">
+        <p class="qr-title">Scan to open this page</p>
+        <div id="qrcode"></div>
+      </div>
+    </div>
+
+    MODERN ENGLISH AUSTRALIA
+ 
+
+<span>E & I in English</span>
+  </header>
+
+  <main>
+    <section class="instructions">
+      <h2> Listen & Choose</h2>
+      <p><strong>Lesson:</strong> Listening and speaking are connected. To make the sound you need to notice how your mouth, lips, tongue, and jaw move. Click the short videos below to hear each sound clearly.</p>
+
+<div class="activity">
+
+  <h2>A Terrible Trip – Listening Activity</h2>
+
+  <audio controls>
+    <source src="audio-file.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <h3>Choose the correct word</h3>
+
+  <p>I took her 
+    <strong>1.</strong>
+    <label><input type="radio" name="q1"><span>ship</span></label>
+    <label><input type="radio" name="q1"><span>sheep</span></label>
+    to Phuket because I don't like flying.
+  </p>
+
+  <p>The 
+    <strong>2.</strong>
+    <label><input type="radio" name="q2"><span>ship</span></label>
+    <label><input type="radio" name="q2"><span>sheep</span></label>
+    to Phuket took about 
+    <strong>3.</strong>
+    <label><input type="radio" name="q3"><span>16</span></label>
+    <label><input type="radio" name="q3"><span>60</span></label>
+    hours to arrive.
+  </p>
+
+  <p>I wanted to lay on the 
+    <strong>4.</strong>
+    <label><input type="radio" name="q4"><span>bitch</span></label>
+    <label><input type="radio" name="q4"><span>beach</span></label>
+    in Thailand for two 
+    <strong>5.</strong>
+    <label><input type="radio" name="q5"><span>wicks</span></label>
+    <label><input type="radio" name="q5"><span>weeks</span></label>
+    and just relax.
+  </p>
+
+  <p>When I arrived at the hotel, they were still putting a clean 
+    <strong>6.</strong>
+    <label><input type="radio" name="q6"><span>shit</span></label>
+    <label><input type="radio" name="q6"><span>sheet</span></label>
+    on my bed.
+  </p>
+
+  <p>So I went to the 
+    <strong>7.</strong>
+    <label><input type="radio" name="q7"><span>bitch</span></label>
+    <label><input type="radio" name="q7"><span>beach</span></label>.
+  </p>
+
+  <p>When I was on the 
+    <strong>8.</strong>
+    <label><input type="radio" name="q8"><span>bitch</span></label>
+    <label><input type="radio" name="q8"><span>beach</span></label>,
+    I saw a 
+    <strong>9.</strong>
+    <label><input type="radio" name="q9"><span>sign</span></label>
+    <label><input type="radio" name="q9"><span>seen</span></label>
+    <label><input type="radio" name="q9"><span>sin</span></label>
+    that said no 
+    <strong>10.</strong>
+    <label><input type="radio" name="q10"><span>litter</span></label>
+    <label><input type="radio" name="q10"><span>letter</span></label>
+    <label><input type="radio" name="q10"><span>litre</span></label>
+    but I couldn't find a 
+    <strong>11.</strong>
+    <label><input type="radio" name="q11"><span>bin</span></label>
+    <label><input type="radio" name="q11"><span>been</span></label>.
+  </p>
+
+  <p>So I went back to the hotel and they were preparing dinner, so I filled my plate with 
+    <strong>12.</strong>
+    <label><input type="radio" name="q12"><span>piss</span></label>
+    <label><input type="radio" name="q12"><span>peas</span></label>
+    <label><input type="radio" name="q12"><span>pies</span></label>.
+  </p>
+
+  <p>The next day I felt so 
+    <strong>13.</strong>
+    <label><input type="radio" name="q13"><span>sick</span></label>
+    <label><input type="radio" name="q13"><span>seek</span></label>.
+    I had to 
+    <strong>14.</strong>
+    <label><input type="radio" name="q14"><span>seek</span></label>
+    <label><input type="radio" name="q14"><span>sick</span></label>
+    a doctor. He gave me a 
+    <strong>15.</strong>
+    <label><input type="radio" name="q15"><span>pill</span></label>
+    <label><input type="radio" name="q15"><span>peel</span></label>.
+  </p>
+
+  <p>The cure made me 
+    <strong>16.</strong>
+    <label><input type="radio" name="q16"><span>slip</span></label>
+    <label><input type="radio" name="q16"><span>sleep</span></label>
+    for 
+    <strong>17.</strong>
+    <label><input type="radio" name="q17"><span>six</span></label>
+    <label><input type="radio" name="q17"><span>sex</span></label>
+    hours. After that, I felt much 
+    <strong>18.</strong>
+    <label><input type="radio" name="q18"><span>better</span></label>
+    <label><input type="radio" name="q18"><span>bitter</span></label>.
+  </p>
+
+</div>
+
+<details style="margin-top:20px;">
+  <summary><strong>Show Answers</strong></summary>
+  <p>1. ship<br>
+  2. ship<br>
+  3. 60<br>
+  4. beach<br>
+  5. weeks<br>
+  6. sheet<br>
+  7. beach<br>
+  8. beach<br>
+  9. sign<br>
+  10. litter<br>
+  11. bin<br>
+  12. peas<br>
+  13. sick<br>
+  14. seek<br>
+  15. pill<br>
+  17. six<br>
+  18. better</p>
+</details>
+
+    </section>
+
+
+
+
+    <div class="links">
+      <a href="A2game.html" class="btn"> Matching Game</a>
+      <a href="A3pract.html" class="btn">Challenge Quiz</a>
+    </div>
+  </main>
+
+  <footer>
+    © Koala Spies Sydney · Modern English Australia · All Rights Reserved
+  </footer>
+
+
+</body>
+</html>
+
+

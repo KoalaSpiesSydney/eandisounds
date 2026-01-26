@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title> E and I in English – Modern English Australia</title>
+
+  <style>
+    :root {
+      --bg:#f2f5f6;
+      --card:#1e1f21;
+      --accent:#009688;
+      --accent-light:#33bba6;
+      --ink:#1c1e20;
+      --ink-light:#f5f5f5;
+      --success:#20c997;
+      --error:#e74c3c;
+      --shadow:0 6px 24px rgba(0,0,0,.25);
+      --radius:14px;
+      --line:rgba(0,0,0,.12);
+      --muted:#6b737a;
+    }
+
+    * { box-sizing:border-box; }
+    html, body { height:100%; }
+    body {
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+      -webkit-text-size-adjust:100%;
+      text-rendering:optimizeLegibility;
+    }
+
+    /* ===== Header (sticky) ===== */
+    header {
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:var(--card);
+      color:var(--accent);
+      text-align:center;
+      padding:1.05rem 1rem;
+      font-size:1.35rem;
+      font-weight:800;
+      letter-spacing:2px;
+      border-bottom:1px solid var(--line);
+    }
+    header span {
+      color:var(--ink-light);
+      font-weight:300;
+      display:block;
+      font-size:0.95rem;
+      letter-spacing:3px;
+      margin-top:0.35rem;
+    }
+
+    @media (min-width: 768px){
+      header { font-size:1.5rem; padding:1.2rem 1rem; }
+      header span { font-size:1rem; }
+    }
+
+    /* ===== Sticky QR (top-left in header) ===== */
+    .qr-wrap{
+      position:absolute;
+      left:10px;
+      top:10px;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      z-index:60;
+    }
+
+    .qr-btn{
+      background:rgba(20, 1, 1, 0.1);
+      color:var(--ink-light);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:10px;
+      padding:0.5rem 0.8rem;
+      font-weight:800;
+      font-size:0.9rem;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.25);
+      transition:transform .2s ease, background .2s ease, border-color .2s ease;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+      line-height:1;
+      white-space:nowrap;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .qr-btn:hover{
+        background:rgba(255,255,255,.16);
+        border-color:rgba(255,255,255,.28);
+        transform:translateY(-1px);
+      }
+    }
+    .qr-btn:active{ transform:translateY(0); }
+    .qr-btn:focus-visible{
+      outline:none;
+      box-shadow:0 0 0 3px rgba(0,150,136,0.22), 0 2px 8px rgba(0,0,0,.25);
+    }
+
+    .qr-panel{
+      display:none;
+      background:rgba(30,31,33,.98);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:14px;
+      padding:10px;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);
+      width:160px;
+    }
+    .qr-panel.open{ display:block; }
+
+    .qr-title{
+      color:var(--ink-light);
+      font-size:0.8rem;
+      font-weight:700;
+      text-align:center;
+      margin:0 0 8px;
+      opacity:.9;
+      letter-spacing:.2px;
+    }
+    #qrcode{
+      width:140px;
+      height:140px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    /* Keep header text from colliding with QR on tiny screens */
+    @media (max-width: 420px){
+      header{ padding-left:72px; padding-right:12px; }
+      .qr-wrap{ left:8px; top:8px; }
+      .qr-panel{ width:150px; }
+      #qrcode{ width:132px; height:132px; }
+    }
+
+    /* ===== Main Layout ===== */
+    main {
+      flex:1;
+      width:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:1rem 1rem 2.25rem;
+    }
+    @media (min-width: 768px){
+      main { padding:1rem 2rem 3rem; }
+    }
+
+    /* ===== Instructions Section ===== */
+    .instructions {
+      margin:1.25rem auto;
+      max-width:900px;
+      line-height:1.6;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:1.25rem 1.25rem;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    @media (min-width: 768px){
+      .instructions { padding:1.5rem 2rem; }
+    }
+
+    .instructions h2 {
+      color:var(--accent);
+      text-align:center;
+      margin:0 0 0.75rem;
+    }
+    .instructions p { margin:0.75rem 0; }
+
+   
+    /* ===== Navigation Buttons ===== */
+    .links {
+      display:flex;
+      justify-content:center;
+      gap:0.9rem;
+      margin:2rem 0 0.75rem;
+      flex-wrap:wrap;
+    }
+
+    .btn {
+      display:inline-block;
+      background:var(--accent);
+      color:#fff;
+      padding:0.8rem 1.5rem;
+      border-radius:10px;
+      font-weight:800;
+      text-decoration:none;
+      font-size:1rem;
+      box-shadow:0 3px 10px rgba(0,0,0,0.2);
+      transition:transform .2s ease, background .2s ease;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    @media (hover:hover) and (pointer:fine){
+      .btn:hover {
+        background:var(--accent-light);
+        transform:translateY(-2px);
+      }
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      margin-top:auto;
+      text-align:center;
+      background:var(--card);
+      color:var(--ink-light);
+      padding:1.1rem 1rem;
+      font-size:0.9rem;
+      border-top:1px solid var(--line);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      * { transition:none !important; scroll-behavior:auto !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <!-- Sticky QR generator (top-left) -->
+    <div class="qr-wrap">
+      <button type="button" class="qr-btn" id="qrToggle" aria-expanded="false" aria-controls="qrPanel">
+        QR
+      </button>
+
+      <div class="qr-panel" id="qrPanel" role="dialog" aria-label="QR code" aria-hidden="true">
+        <p class="qr-title">Scan to open this page</p>
+        <div id="qrcode"></div>
+      </div>
+    </div>
+
+    MODERN ENGLISH AUSTRALIA
+    <span>E & I in English</span>
+  </header>
+
+  <main>
+    <section class="instructions">
+      <h2>HINT — The Varying Sounds of A</h2>
+      <p><strong>Lesson:</strong> Listening and speaking are connected. To make the sound you need to notice how your mouth, lips, tongue, and jaw move. Click the short videos below to hear each sound clearly.</p>
+
+      <div class="vowel-block">
+        <h3>/æ/—  long “a” sound (cat, can,hand,jam)</h3>
+        <video src="ae.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc"> /æ/ is the short “a” sound you hear in cat, map, and black.
+Your mouth opens a bit, your tongue sits low and forward, and the sound is quick and relaxed.</p>
+      </div>
+
+      <div class="vowel-block">
+        <h3>/eɪ/ — long and open “a” sound (Kate, cane, cake)</h3>
+        <video src="ay.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">/eɪ/ is the long “ay” sound you hear in cake, rain, and name.
+Your mouth starts in a mid‑open e position, then your tongue moves slightly higher as the sound glides forward.</p>
+      </div>
+
+      <div class="vowel-block">
+        <h3>/aː/ or /ɑː/ — “ah” sound (dance)</h3>
+        <video src="USdance.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">The /aː/ vowel is made with the tongue low and slightly forward, the jaw open, and the lips relaxed. The vocal folds vibrate smoothly to create a long, open, voiced sound.</p>
+        <video src="Ukdance.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">The /aː/ vowel is made with the tongue low and but in the middle a little back, the jaw less open, and the lips relaxed. The vocal folds vibrate smoothly to create a long, open, voiced sound.</p>
+      </div>
+
+      
+      <div class="vowel-block">
+        <h3> /ɔː/ — “all” sound (call)</h3>
+        <video src="all.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc"> Your mouth opens wide, your tongue sits low in the front of your mouth, and your voice vibrates the whole time.</p>
+
+      <div class="vowel-block">
+        <h3>/ɛ/ — “e” sound (many)</h3>
+        <video src="e.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">/ɛ/ is the short “e” sound, like in bed, pen, or many.
+Your mouth stays half‑open, your tongue is in the middle‑front of your mouth, and your lips stay relaxed</p>
+      </div>
+
+
+        <div class="vowel-block">
+        <h3> /ɒ/ — “o” sound (want)</h3>
+        <video src="o.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">/ɒ/ is the short “o” sound you hear in hot, not, want, and squat in Australian English.
+Your mouth opens a little, your lips relax (not rounded), and your tongue sits low and slightly back.</p>
+      </div>
+    </section>
+
+    <div class="links">
+      <a href="A2game.html" class="btn"> Matching Game</a>
+      <a href="A3pract.html" class="btn">Challenge Quiz</a>
+    </div>
+  </main>
+
+  <footer>
+    © Koala Spies Sydney · Modern English Australia · All Rights Reserved
+  </footer>
+
+  <!-- QRCode.js (client-side) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    /* =============================
+       CLICK-TO-PLAY WITH AUDIO
+       - Stops other videos
+       - First tap: play from start with sound
+       - Second tap: pause
+       ============================= */
+
+    const videos = Array.from(document.querySelectorAll(".vowel-video"));
+    let current = null;
+
+    videos.forEach(video => {
+      video.autoplay = false;
+      video.loop = false;
+      video.muted = true;
+
+      video.addEventListener("click", async () => {
+        if (current && current !== video) {
+          current.pause();
+          current.currentTime = 0;
+          current.muted = true;
+          current = null;
+        }
+
+        if (!video.paused) {
+          video.pause();
+          return;
+        }
+
+        try {
+          video.currentTime = 0;
+          video.muted = false;
+          await video.play();
+          current = video;
+        } catch (err) {
+          console.log("Video play error:", err);
+        }
+
+        video.onended = () => {
+          video.pause();
+          video.currentTime = 0;
+          video.muted = true;
+          if (current === video) current = null;
+        };
+      });
+    });
+
+    /* =============================
+       STICKY QR GENERATOR
+       - Toggles panel
+       - Generates QR once (current page URL)
+       ============================= */
+
+    const qrToggle = document.getElementById("qrToggle");
+    const qrPanel  = document.getElementById("qrPanel");
+    const qrTarget = document.getElementById("qrcode");
+    let qrMade = false;
+
+    function openQR(){
+      qrPanel.classList.add("open");
+      qrPanel.setAttribute("aria-hidden", "false");
+      qrToggle.setAttribute("aria-expanded", "true");
+
+      if (!qrMade && window.QRCode) {
+        qrTarget.innerHTML = "";
+        new QRCode(qrTarget, {
+          text: window.location.href,
+          width: 140,
+          height: 140,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        qrMade = true;
+      }
+    }
+
+    function closeQR(){
+      qrPanel.classList.remove("open");
+      qrPanel.setAttribute("aria-hidden", "true");
+      qrToggle.setAttribute("aria-expanded", "false");
+    }
+
+    qrToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = qrPanel.classList.contains("open");
+      if (isOpen) closeQR(); else openQR();
+    });
+
+    // Close if you tap/click outside
+    document.addEventListener("click", (e) => {
+      if (!qrPanel.classList.contains("open")) return;
+      const clickedInside = qrPanel.contains(e.target) || qrToggle.contains(e.target);
+      if (!clickedInside) closeQR();
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeQR();
+    });
+  </script>
+</body>
+</html>
+
+
