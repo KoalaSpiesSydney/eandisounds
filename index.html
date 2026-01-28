@@ -407,132 +407,131 @@
 </footer>
 
 <script>
-(() => {
-  // Elements
-  const startBtn   = document.getElementById("startBtn");
-  const recBtn     = document.getElementById("recBtn");
-  const resetBtn   = document.getElementById("resetBtn");
-  const statusEl   = document.getElementById("status");
-  const streakPill = document.getElementById("streakPill");
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
 
-  const levelFill  = document.getElementById("levelFill");
-  const levelTxt   = document.getElementById("levelTxt");
+  const startBtn   = $("startBtn");
+  const recBtn     = $("recBtn");
+  const resetBtn   = $("resetBtn");
+  const statusEl   = $("status");
+  const streakPill = $("streakPill");
 
-  const setSel     = document.getElementById("setSel");
-  const targetSel  = document.getElementById("target");
+  const levelFill  = $("levelFill");
+  const levelTxt   = $("levelTxt");
 
-  const resultBox  = document.getElementById("resultBox");
-  const verdictEl  = document.getElementById("verdict");
-  const detailEl   = document.getElementById("detail");
+  const setSel     = $("setSel");
+  const targetSel  = $("target");
 
-  const lengthFill = document.getElementById("lengthFill");
-  const lengthTag  = document.getElementById("lengthTag");
-  const lengthHint = document.getElementById("lengthHint");
+  const resultBox  = $("resultBox");
+  const verdictEl  = $("verdict");
+  const detailEl   = $("detail");
 
-  const masteryTag = document.getElementById("masteryTag");
+  const lengthFill = $("lengthFill");
+  const lengthTag  = $("lengthTag");
+  const lengthHint = $("lengthHint");
 
-  const set1Info   = document.getElementById("set1Info");
-  const set2Info   = document.getElementById("set2Info");
+  const masteryTag = $("masteryTag");
+  const set1Info   = $("set1Info");
+  const set2Info   = $("set2Info");
 
-  // Sets / targets
+  // ---- Hard fail message if IDs don't match your HTML ----
+  const required = {
+    startBtn, recBtn, resetBtn, statusEl, streakPill,
+    levelFill, levelTxt, setSel, targetSel,
+    resultBox, verdictEl, detailEl, lengthFill, lengthTag, lengthHint, masteryTag,
+    set1Info, set2Info
+  };
+
+  const missing = Object.entries(required).filter(([k,v]) => !v).map(([k]) => k);
+  if (missing.length) {
+    alert("Script can't find these IDs in your HTML:\n\n" + missing.join(", ") +
+          "\n\nFix the IDs or paste the matching HTML.");
+    return;
+  }
+
+  // ---- Sets ----
   const SETS = {
     set1: {
       title: "Set 1 (/ɪ/ vs /iː/)",
       options: [
-        { label: "ship (/ɪ/)",   expect: "short" },
-        { label: "sheep (/iː/)", expect: "long"  },
-        { label: "bit (/ɪ/)",    expect: "short" },
-        { label: "beat (/iː/)",  expect: "long"  },
-        { label: "live (/ɪ/)",   expect: "short" },
-        { label: "leave (/iː/)", expect: "long"  }
+        { label:"ship (/ɪ/)",   expect:"short" },
+        { label:"sheep (/iː/)", expect:"long"  },
+        { label:"bit (/ɪ/)",    expect:"short" },
+        { label:"beat (/iː/)",  expect:"long"  },
+        { label:"live (/ɪ/)",   expect:"short" },
+        { label:"leave (/iː/)", expect:"long"  }
       ]
     },
     set2: {
       title: "Set 2 (/ɪ/ vs /eɪ/)",
       options: [
-        { label: "bit (/ɪ/)",    expect: "short" },
-        { label: "bait (/eɪ/)",  expect: "ay"    },
-        { label: "sit (/ɪ/)",    expect: "short" },
-        { label: "sate (/eɪ/)",  expect: "ay"    },
-        { label: "hit (/ɪ/)",    expect: "short" },
-        { label: "hate (/eɪ/)",  expect: "ay"    },
-        { label: "ship (/ɪ/)",   expect: "short" },
-        { label: "shape (/eɪ/)", expect: "ay"    }
+        { label:"bit (/ɪ/)",    expect:"short" },
+        { label:"bait (/eɪ/)",  expect:"ay"    },
+        { label:"sit (/ɪ/)",    expect:"short" },
+        { label:"sate (/eɪ/)",  expect:"ay"    },
+        { label:"hit (/ɪ/)",    expect:"short" },
+        { label:"hate (/eɪ/)",  expect:"ay"    },
+        { label:"ship (/ɪ/)",   expect:"short" },
+        { label:"shape (/eɪ/)", expect:"ay"    }
       ]
     }
   };
 
-  // Audio capture
+  // ---- Audio ----
   let ctx, mic, analyser, data;
   let rafId = null;
 
-  // Listening state
   let listening = false;
-  let samples = []; // {t, rms}
+  let samples = [];
   let t0 = 0;
 
-  // Student mastery: 2 correct in a row
   let streak = 0;
 
-  // VAD / timing thresholds
   const VAD_ON = 0.03;
   const VAD_OFF = 0.02;
   const MIN_SEG_MS = 60;
   const MAX_LISTEN_MS = 1400;
 
-  // Set-specific length boundaries (ms)
   const THRESH = {
-    set1: { shortMax: 180, longMin: 220 }, // /ɪ/ vs /iː/
-    set2: { shortMax: 190, longMin: 260 }  // /ɪ/ vs /eɪ/
+    set1: { shortMax: 180, longMin: 220 },
+    set2: { shortMax: 190, longMin: 260 }
   };
 
-  // Visual bar scaling (student-facing)
-  const BAR_MAX = {
-    set1: 360,
-    set2: 520
-  };
+  const BAR_MAX = { set1: 360, set2: 520 };
 
-  // UI helpers
-  function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
-
-  function setRecLabel(){
-    recBtn.textContent = listening ? "Stop" : "Tap to Speak";
-  }
-
-  function setStreak(n){
-    streak = n;
-    streakPill.textContent = "Streak: " + streak;
-  }
+  // ---- UI helpers ----
+  function setStatus(t){ statusEl.textContent = "Status: " + t; }
+  function setRecLabel(){ recBtn.textContent = listening ? "Stop" : "Tap to Speak"; }
+  function setStreak(n){ streak = n; streakPill.textContent = "Streak: " + streak; }
 
   function setResultClass(kind){
-    resultBox.className = "result " + kind;
+    resultBox.className = "result " + kind; // relies on your CSS classes
   }
 
-  function clearResultUI(){
+  function clearResult(){
     resultBox.style.display = "none";
     verdictEl.textContent = "—";
     detailEl.textContent = "—";
-    setResultClass("unclear");
     masteryTag.style.display = "none";
     lengthFill.style.width = "0%";
     lengthTag.textContent = "—";
     lengthHint.textContent = "—";
+    setResultClass("unclear");
   }
 
   function populateTargets(setKey){
     targetSel.innerHTML = "";
-    SETS[setKey].options.forEach((o, idx) => {
+    SETS[setKey].options.forEach((o) => {
       const opt = document.createElement("option");
-      opt.value = o.expect; // short | long | ay
+      opt.value = o.expect;
       opt.textContent = o.label;
       targetSel.appendChild(opt);
-      if (idx === 0) targetSel.selectedIndex = 0;
     });
 
-    if (setKey === "set1") { set1Info.style.display = ""; set2Info.style.display = "none"; }
-    else { set1Info.style.display = "none"; set2Info.style.display = ""; }
+    set1Info.style.display = (setKey === "set1") ? "" : "none";
+    set2Info.style.display = (setKey === "set2") ? "" : "none";
 
-    clearResultUI();
+    clearResult();
     setStreak(0);
   }
 
@@ -550,17 +549,14 @@
       analyser.getByteTimeDomainData(data);
       const rms = rmsFromTimeDomain(data);
 
-      // Meter UI
       const pct = Math.max(0, Math.min(1, rms * 6));
       levelFill.style.width = (pct * 100).toFixed(1) + "%";
       levelTxt.textContent = rms.toFixed(3);
 
-      // Collect samples during listening
       if (listening){
         const t = performance.now() - t0;
         samples.push({ t, rms });
 
-        // Safety stop
         if (t > MAX_LISTEN_MS){
           stopListening();
           analyseAndReport();
@@ -568,7 +564,6 @@
         }
       }
     }
-
     rafId = requestAnimationFrame(tick);
   }
 
@@ -579,7 +574,7 @@
   }
 
   async function initMic(){
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
 
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     mic = ctx.createMediaStreamSource(stream);
@@ -596,7 +591,6 @@
     startBtn.disabled = true;
     recBtn.disabled = false;
     resetBtn.disabled = false;
-
     listening = false;
     setRecLabel();
   }
@@ -604,7 +598,7 @@
   function reset(){
     listening = false;
     samples = [];
-    clearResultUI();
+    clearResult();
     setStatus(startBtn.disabled ? "ready" : "not started");
     setRecLabel();
   }
@@ -612,11 +606,8 @@
   async function startListening(){
     if (!ctx) return;
     await ensureAudioRunning();
-
-    // Clear only the recording buffer, not the streak
     samples = [];
-    clearResultUI();
-
+    clearResult();
     listening = true;
     t0 = performance.now();
     setStatus("listening… speak now");
@@ -634,7 +625,6 @@
 
     for (let i=0;i<samples.length;i++){
       const {t, rms} = samples[i];
-
       if (!inSeg && rms >= VAD_ON){
         inSeg = true;
         segStart = t;
@@ -659,19 +649,6 @@
     return "unclear";
   }
 
-  function expectedLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "—";
-  }
-  function heardLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "UNCLEAR";
-  }
-
   function applyLengthBar(setKey, dur){
     const max = BAR_MAX[setKey] || 400;
     const pct = Math.max(0, Math.min(100, (dur / max) * 100));
@@ -679,63 +656,60 @@
     lengthTag.textContent = Math.round(dur) + " ms";
   }
 
-  function studentTip(setKey, expected, heard){
-    if (heard === "unclear"){
-      return "Try again. Use a steady voice and normal volume.";
-    }
+  function tip(setKey, expected, heard){
+    if (heard === "unclear") return "Try again. Use a steady voice and normal volume.";
+
     if (expected === heard){
       if (expected === "short") return "Good. Keep it quick and light.";
-      if (expected === "long") return "Good. Hold it longer and keep the sound steady.";
-      if (expected === "ay") return "Good. Keep the glide (e → i) and make it longer than /ɪ/.";
+      if (expected === "long") return "Good. Hold it longer and keep it steady.";
+      if (expected === "ay") return "Good. Make it longer and add the glide (e → i).";
       return "Good.";
     }
 
     if (setKey === "set1"){
-      if (expected === "long" && heard === "short") return "Too short. Smile and hold the vowel longer.";
-      if (expected === "short" && heard === "long") return "Too long. Say it quickly without holding it.";
+      if (expected === "long") return "Too short. Smile and hold the vowel longer.";
+      return "Too long. Say it quickly without holding it.";
     } else {
-      if (expected === "ay" && heard === "short") return "Too short. Make it longer and add the glide (e → i).";
-      if (expected === "short" && heard === "ay") return "Too long. Keep it short and avoid the glide.";
+      if (expected === "ay") return "Too short. Make it longer and add the glide (e → i).";
+      return "Too long. Keep it short and avoid the glide.";
     }
-    return "Try again.";
   }
 
   function analyseAndReport(){
     const setKey = setSel.value;
-    const segs = findVoicedSegments();
+    const expected = targetSel.value;
 
+    const segs = findVoicedSegments();
     resultBox.style.display = "block";
     masteryTag.style.display = "none";
 
     if (!segs.length){
       setResultClass("unclear");
       verdictEl.textContent = "No clear sound";
-      detailEl.textContent = "Speak a little louder and keep the vowel steady.";
+      detailEl.textContent = "Speak a little louder and hold one vowel steady.";
       lengthFill.style.width = "0%";
       lengthTag.textContent = "—";
-      lengthHint.textContent = "Aim for one clear vowel sound (not whispering).";
+      lengthHint.textContent = "Try again (don’t whisper).";
       setStreak(0);
       setStatus("ready");
       return;
     }
 
-    // Longest segment as proxy for vowel length
+    // longest segment
     let longest = segs[0];
     for (const s of segs){
       if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
     }
     const dur = longest[1] - longest[0];
-
     const heard = classifyDuration(setKey, dur);
-    const expected = targetSel.value;
 
     applyLengthBar(setKey, dur);
 
     if (heard === "unclear"){
       setResultClass("unclear");
       verdictEl.textContent = "Unclear length";
-      detailEl.textContent = studentTip(setKey, expected, heard);
-      lengthHint.textContent = "Try a single clean vowel sound. Don’t whisper.";
+      detailEl.textContent = tip(setKey, expected, heard);
+      lengthHint.textContent = "Try one clean vowel sound.";
       setStreak(0);
       setStatus("ready");
       return;
@@ -745,9 +719,8 @@
 
     if (ok){
       setResultClass(heard === "short" ? "shortok" : "correct");
-      verdictEl.textContent = "Correct: " + expectedLabel(expected);
-      detailEl.textContent = studentTip(setKey, expected, heard);
-
+      verdictEl.textContent = "Correct";
+      detailEl.textContent = tip(setKey, expected, heard);
       setStreak(streak + 1);
 
       if (streak >= 2){
@@ -756,37 +729,29 @@
       }
 
       lengthHint.textContent = "Good length. Try another word or keep practising.";
-
     } else {
       setResultClass("wrong");
       verdictEl.textContent = "Not quite";
-      detailEl.textContent =
-        "Target: " + expectedLabel(expected) + " • You did: " + heardLabel(heard) + ". " +
-        studentTip(setKey, expected, heard);
-
-      lengthHint.textContent = "Press Try Again and repeat with the tip above.";
+      detailEl.textContent = tip(setKey, expected, heard);
+      lengthHint.textContent = "Use the tip, then Try Again.";
       setStreak(0);
     }
 
     setStatus("ready");
   }
 
-  // Events
+  // ---- Wiring ----
   setSel.addEventListener("change", () => populateTargets(setSel.value));
-  targetSel.addEventListener("change", () => {
-    clearResultUI();
-    setStreak(0);
-  });
+  targetSel.addEventListener("change", () => { clearResult(); setStreak(0); });
 
   startBtn.addEventListener("click", async () => {
     try { await initMic(); }
     catch(e){
       setStatus("microphone blocked");
-      alert("Microphone access was blocked. Please allow mic permission and reload.");
+      alert("Microphone access was blocked. Allow mic permission and reload.");
     }
   });
 
-  // TAP-TO-SPEAK (reliable on phones + computers)
   recBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     if (!ctx) return;
@@ -803,16 +768,18 @@
 
   resetBtn.addEventListener("click", reset);
 
-  // Background init
+  // ---- Init ----
   populateTargets("set1");
   setStatus("not started");
   setStreak(0);
   setRecLabel();
-})();
+});
 </script>
+
 
 </body>
 </html>
+
 
 
 
