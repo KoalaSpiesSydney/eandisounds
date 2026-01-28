@@ -1,784 +1,479 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Minimal Pair Checker – /iː/ vs /ɪ/ and /ɪ/ vs /eɪ/ | Modern English Australia</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title> E and I in English – Modern English Australia</title>
 
-<style>
-  :root{
-    --bg:#f2f5f6;
-    --card:#1e1f21;
-    --accent:#009688;
-    --accent-light:#33bba6;
-    --ink:#1c1e20;
-    --ink-light:#f5f5f5;
-    --success:#20c997;
-    --error:#e74c3c;
-    --shadow:0 6px 24px rgba(0,0,0,.25);
-    --radius:14px;
-    --line:rgba(0,0,0,.12);
-    --muted:#6b737a;
+  <style>
+    :root {
+  --bg:#f2f5f6;
+  --card:#1e1f21;
+  --accent:#009688;
+  --accent-light:#33bba6;
+  --ink:#1c1e20;
+  --ink-light:#f5f5f5;
+  --success:#20c997;
+  --error:#e74c3c;
+  --shadow:0 6px 24px rgba(0,0,0,.25);
+  --radius:14px;
+  --line:rgba(0,0,0,.12);
+  --muted:#6b737a;
+}
 
-    --max:980px;
-    --pad:16px;
-    --gap:12px;
-  }
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
 
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  -webkit-text-size-adjust:100%;
+  text-rendering:optimizeLegibility;
+}
 
-  body{
-    margin:0;
-    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
-    -webkit-text-size-adjust:100%;
-    text-rendering:optimizeLegibility;
-  }
+/* ===== HEADER ===== */
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:var(--card);
+  color:var(--accent);
+  text-align:center;
+  padding:1.05rem 1rem;
+  font-size:1.35rem;
+  font-weight:800;
+  letter-spacing:2px;
+  border-bottom:1px solid var(--line);
+}
+header span{
+  color:var(--ink-light);
+  font-weight:300;
+  display:block;
+  font-size:0.95rem;
+  letter-spacing:3px;
+  margin-top:0.35rem;
+}
+@media (min-width:768px){
+  header{ font-size:1.5rem; padding:1.2rem 1rem; }
+  header span{ font-size:1rem; }
+}
 
-  header{
-    position:sticky;
-    top:0;
-    z-index:50;
-    background:var(--card);
-    color:var(--accent);
-    text-align:center;
-    padding:1.05rem 1rem;
-    font-size:1.35rem;
-    font-weight:800;
-    letter-spacing:2px;
-    border-bottom:1px solid var(--line);
-  }
-  header span{
-    color:var(--ink-light);
-    font-weight:300;
-    display:block;
-    font-size:0.95rem;
-    letter-spacing:3px;
-    margin-top:0.35rem;
-  }
-  @media (min-width:768px){
-    header{ font-size:1.5rem; padding:1.2rem 1rem; }
-    header span{ font-size:1rem; }
-  }
+/* ===== QR ===== */
+.qr-wrap{
+  position:absolute;
+  left:10px;
+  top:10px;
+  display:flex;
+  gap:10px;
+  z-index:60;
+}
+.qr-btn{
+  background:rgba(255,255,255,.08);
+  color:var(--ink-light);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px;
+  padding:.5rem .8rem;
+  font-weight:800;
+  font-size:.9rem;
+  cursor:pointer;
+}
+.qr-panel{
+  display:none;
+  background:#1e1f21;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;
+  padding:10px;
+  width:160px;
+}
+.qr-panel.open{ display:block; }
+#qrcode{
+  width:140px;
+  height:140px;
+  background:#fff;
+  border-radius:10px;
+}
 
-  main{
-    width:100%;
-    max-width:var(--max);
-    margin:0 auto;
-    padding:18px var(--pad) 24px;
-    display:flex;
-    flex-direction:column;
-    flex:1; /* KEY: allows links to sit at bottom */
-  }
+/* ===== MAIN ===== */
+main{
+  flex:1;
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:1rem 1rem 2.25rem;
+}
+@media (min-width:768px){
+  main{ padding:1rem 2rem 3rem; }
+}
 
-  .page-title{
-    margin:0 0 12px;
-    font-size:18px;
-    font-weight:900;
-    color:var(--ink);
-    line-height:1.25;
-  }
-  .page-sub{
-    margin:0 0 14px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.45;
-  }
-  @media (min-width:768px){
-    .page-title{ font-size:20px; margin-bottom:10px; }
-    .page-sub{ font-size:14px; margin-bottom:16px; }
-  }
+/* ===== INSTRUCTIONS ===== */
+.instructions{
+  margin:1.25rem auto;
+  max-width:900px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:1.25rem;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  line-height:1.6;
+}
+@media (min-width:768px){
+  .instructions{ padding:1.5rem 2rem; }
+}
+.instructions h2{
+  color:var(--accent);
+  text-align:center;
+  margin:0 0 .75rem;
+}
+.vowel-title{
+  display:flex;
+  justify-content:center;
+  gap:.6rem;
+  align-items:baseline;
+  font-size:1.25rem;
+  margin:0 0 .5rem;
+}
 
-  .card{
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:16px;
-    margin-bottom:14px;
-  }
-  @media (min-width:768px){
-    .card{ padding:18px; }
-  }
+.vowel-title .phoneme{
+  font-weight:800;
+  color:var(--accent);
+  letter-spacing:.5px;
+}
 
-  .section-title{
-    margin:0 0 10px;
-    font-size:15px;
-    font-weight:900;
-    letter-spacing:.2px;
-  }
-  .section-sub{
-    margin:0 0 14px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.45;
-  }
+.vowel-title .label{
+  font-weight:400;
+  color:var(--ink);
+}
 
-  .row{
-    display:flex;
-    gap:var(--gap);
-    flex-wrap:wrap;
-    align-items:center;
-  }
+/* ===== VOWEL BLOCKS ===== */
+.vowel-block{
+  margin:1.25rem 0;
+}
+.vowel-block h3{
+  margin:0 0 .5rem;
+}
+.vowel-desc{
+  color:var(--muted);
+  font-size:.95rem;
+  margin:.5rem 0 0;
+  text-align: center;
+}
 
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:var(--gap);
-    margin-top:12px;
-  }
-  @media (max-width:420px){
-    .grid{ grid-template-columns:1fr; }
-  }
 
-  .btn{
-    border:1px solid var(--line);
-    background:#fff;
-    padding:.8rem 1.2rem;
-    border-radius:10px;
-    font-weight:800;
-    cursor:pointer;
-    user-select:none;
-    text-decoration:none;
-    color:inherit;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:44px;
-    white-space:nowrap;
-  }
-  .btn.primary{ background:var(--accent); border-color:transparent; color:#fff; }
-  .btn:disabled{ opacity:.5; cursor:not-allowed; }
-  @media (hover:hover){
-    .btn:hover{ background:var(--accent-light); color:#fff; border-color:transparent; }
-    .btn.primary:hover{ background:var(--accent-light); }
-  }
-  @media (max-width:420px){
-    .btn{ width:100%; }
-  }
+/* ===== VIDEO SIZING (THIS IS THE FIX) ===== */
+.vowel-video{
+  display:block;
+  width:min(100%, 420px);
+  aspect-ratio:16 / 9;
+  height:auto;
+  margin:.75rem auto 0;
+  border-radius:12px;
+  background:#000;
+}
 
-  .pill{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 12px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    color:var(--muted);
-    font-size:13px;
-    background:#fff;
+/* Larger screens */
+@media (min-width:768px){
+  .vowel-video{
+    width:min(100%, 560px);
   }
+}
 
-  .meter{
-    height:10px;
-    border-radius:999px;
-    background:rgba(0,0,0,.08);
-    overflow:hidden;
-    flex:1;
-    min-width:220px;
-    border:1px solid var(--line);
-  }
-  @media (max-width:420px){
-    .meter{ min-width:140px; }
-  }
-  .meter > div{ height:100%; width:0%; background:var(--accent); }
+/* ===== BUTTONS ===== */
+.links{
+  display:flex;
+  justify-content:center;
+  gap:.9rem;
+  margin:2rem 0 .75rem;
+  flex-wrap:wrap;
+}
+.btn{
+  background:var(--accent);
+  color:#fff;
+  padding:.8rem 1.5rem;
+  border-radius:10px;
+  font-weight:800;
+  text-decoration:none;
+  font-size:1rem;
+  box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+@media (hover:hover){
+  .btn:hover{ background:var(--accent-light); }
+}
 
-  .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
-  .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
+/* ===== FOOTER ===== */
+footer{
+  margin-top:auto;
+  text-align:center;
+  background:var(--card);
+  color:var(--ink-light);
+  padding:1.1rem 1rem;
+  font-size:.9rem;
+  border-top:1px solid var(--line);
+}
 
-  label{
-    display:block;
-    font-weight:800;
-    font-size:13px;
-    margin:10px 0 6px;
-    color:var(--muted);
-  }
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; }
+}
+.home-btn{
+  position:absolute;
+  right:12px;
+  top:12px;
+  padding:.45rem .8rem;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:var(--ink-light);
+  font-weight:800;
+  font-size:.85rem;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.18);
+}
 
-  select{
-    width:100%;
-    padding:10px 12px;
-    border-radius:12px;
-    border:1px solid var(--line);
-    background:#fff;
-    font-weight:800;
-    min-height:44px;
-  }
-
-  /* Student-facing result styles */
-  .result{
-    margin-top:14px;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid var(--line);
-    background:rgba(0,0,0,.02);
-  }
-  .result.correct{ border-color:#1db954; background:#e9f8ef; }
-  .result.shortok{ border-color:#3498db; background:#eaf3fb; }
-  .result.wrong{ border-color:#e74c3c; background:#fdecea; }
-  .result.unclear{ border-color:#b9bcc1; background:#f3f4f6; }
-
-  .result-top{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
-  }
-
-  .mastery{
-    display:inline-flex;
-    align-items:center;
-    padding:6px 10px;
-    border-radius:999px;
-    border:1px solid var(--line);
-    background:#fff;
-    color:var(--muted);
-    font-weight:800;
-    font-size:12px;
-    letter-spacing:.2px;
-  }
-
-  .length-wrap{
-    margin-top:10px;
-  }
-  .length-label{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    color:var(--muted);
-    font-size:12px;
-    font-weight:800;
-    letter-spacing:.2px;
-    margin-bottom:6px;
-  }
-  .length-bar{
-    height:10px;
-    border-radius:999px;
-    background:#ddd;
-    overflow:hidden;
-    border:1px solid var(--line);
-  }
-  .length-fill{
-    height:100%;
-    width:0%;
+@media (hover:hover){
+  .home-btn:hover{
     background:var(--accent);
+    border-color:transparent;
+    color:#fff;
   }
-  .length-hint{
-    margin-top:8px;
-    color:var(--muted);
-    font-size:12px;
-    line-height:1.35;
-  }
+}
+.back-wrap{
+  display:flex;
+  justify-content:flex-start;
+  margin-top:24px;
+}
 
-  .links{
-    margin-top:auto;
-    padding-top:14px;
-    display:flex;
-    justify-content:center;
-    gap:.9rem;
-    flex-wrap:wrap;
-    border-top:1px solid var(--line);
-  }
+.back-btn{
+  background:#33bba6;
+}
 
-  footer{
-    text-align:center;
-    background:var(--card);
-    color:var(--ink-light);
-    padding:1.1rem 1rem;
-    font-size:.9rem;
-    border-top:1px solid var(--line);
-  }
+@media (max-width:420px){
+  .back-wrap{ justify-content:center; }
+}
 
-  @media (prefers-reduced-motion: reduce){
-    *{ transition:none !important; }
-  }
-</style>
+
+
+  </style>
 </head>
 
 <body>
+  <header>
+    <!-- Sticky QR generator (top-left) -->
+    <div class="qr-wrap">
+      <button type="button" class="qr-btn" id="qrToggle" aria-expanded="false" aria-controls="qrPanel">
+        QR
+      </button>
 
-<header>
-  MODERN ENGLISH AUSTRALIA
-  <span>Koala Spies Sydney · Minimal Pair Checker</span>
-</header>
+      <div class="qr-panel" id="qrPanel" role="dialog" aria-label="QR code" aria-hidden="true">
+        <p class="qr-title">Scan to open this page</p>
+        <div id="qrcode"></div>
+      </div>
+    </div>
+<a href="index.html" class="home-btn" aria-label="Home">Home</a>
 
-<main>
-  <h1 class="page-title">Minimal Pair Checker (Microphone) — Vowel Length</h1>
-  <p class="page-sub">
-    Step 1: Choose a set and word. Step 2: Hold to Speak. Step 3: Try to get the correct sound twice in a row.
+    MODERN ENGLISH AUSTRALIA
+    <span>E, I & Y in English</span>
+  </header>
+
+  <main>
+    <section class="instructions">
+
+      <h3 class="vowel-title">
+  <span class="phoneme">/iː/</span>
+  <span class="label">Long “ee” sound</span>
+</h3>
+
+
+     <div class="vowel-block">
+  <h3>/iː/— long “ee” is easy and common for most native speakers but many language only have the shortened version.</h3>
+  <video src="please-ee.mov" class="vowel-video" playsinline preload="metadata"></video>
+  <p class="vowel-desc">
+    Commonly mispronounced; evening (EEvening), beach (bEEch)
+    <br><br>
+    This is a voiced sound so it is produced in the back of your throat with no or little air escaping your lips. However, and most importantly you must show your teeth and smile to shape the sound and hold it so that it is long.
   </p>
+</div>
 
-  <div class="card">
-    <div class="row">
-      <button id="startBtn" class="btn primary">Enable Microphone</button>
-      <button id="recBtn" class="btn" disabled>Hold to Speak</button>
-      <button id="resetBtn" class="btn" disabled>Try Again</button>
-      <span class="pill" id="status">Status: not started</span>
-      <span class="pill" id="streakPill" aria-live="polite">Streak: 0</span>
+<p class="vowel-desc">
+  Common spelling of /iː/ ; 'ee' and 'ene'. Words like 'scene' and 'seen' are pronounced the same.
+  'ea' is often pronounced this way, for instance in 'sea' or 'team' or 'beak' but not always, for instance 'steak' /aɪ/ (see below).
+</p>
+
+<h3 class="vowel-title">
+  <span class="phoneme">/ɪ/</span>
+  <span class="label">Short “i” sound</span>
+</h3>
+
+      <div class="vowel-block">
+        <h3>/ɪ/ — this is a short sound very common in many languages. It is the same sound in Spanish, Japanese and many others.</h3>
+        <video src="it.mov" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc"> /ɪ/ This is a voiced sound so it is produced in the back of your throat with no or little air escaping your lips. The sound is short and pushed to the roof of your mouth. You shouldn't see any teeth when you pronounce it and it is short- so don't hold it.</p>
+      </div>
+      
+
+   <h3 class="vowel-title">
+  <span class="phoneme"> /ɛ/ </span>
+  <span class="label"> Short 'e' sound</span>
+</h3>  
+      </div>
+      <div class="vowel-block">
+        <h3> /ɛ/ — this is a also short sound and the same as the vowel sound in most phonetic language from Spanish to Japanese</h3>
+        <video src="Easinegg.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">  /ɛ/ This is a voiced sound so it is produced in the back of your throat with no or little air escaping your lips. The sound is short and pushed to the bottom of your mouth. You might lower your jaw a little. Your tongue is in the middle‑front of your mouth, and your lips stay relaxed</p></p>
+      </div>
+ 
+   <h3 class="vowel-title">
+  <span class="phoneme"> /aɪ/ </span>
+  <span class="label">Long/Open “eye” sound</span>
+</h3> 
+
+    
+       <div class="vowel-block">
+        <h3> /aɪ/ —  this is a dipthong - to vowel sounds run together that make one, what is usually called long but I like to think of as open sound. It is often the same sound with spelling varietions 'ae', 'ei' or 'y'</h3>
+        <video src="eye.mov" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc">/aɪ/  This is a voice sound produced at the back of the throat and you need to use your lower jaw  to push it out. Americans who speak from the front of their mouth might show teeth, Aussies who speak from the middle of their mouth are famous for singing this vowel sound.</p>
+      </div>
+
+ 
+   <h3 class="vowel-title">
+  <span class="phoneme"> /eɪ/ </span>
+  <span class="label">Long/Open “ay” sound</span>
+</h3> 
+      
+
+      <div class="vowel-block">
+        <h3>/eɪ/ — “hey or hay”</h3>
+        <video src="ay.mp4" class="vowel-video" playsinline preload="metadata"></video>
+        <p class="vowel-desc"> /eɪ/  is the short “e” sound, like in bed, pen, or many.
+This is a voice sound pushed out from the back of your throat. This is the most open sound, you need to use your top and bottom jaw, and push the sound out throw the top of your mouth, and your lips stay relaxed</p>
+      </div>
+
+
+<p>Hack- most of the time (but not all of the time) if there is an 'e' at the end of the word that is not pronounced, the vowel in the middle will be long. In the case of a + e and e + e this will be the same ei sound. Also 'ight' is pronounced 'ite. <br> <br> Consider these words with different spelling but the same sound: seen & scene / stake & steak / site, cite & sight / write & right </p>
+    </section>
+<div class="back-wrap">
+  <button class="btn back-btn" onclick="history.back()">← Back</button>
+</div>
+
+    <div class="links">
+      <a href="iminimalpairs.html" class="btn"> Practice identifying sounds </a>
+      <a href="A3pract.html" class="btn">Practice Say long and short sounds/a>
+       <a href="A3pract.html" class="btn">Listening Gapfill </a>
     </div>
+  </main>
 
-    <div class="grid">
-      <div>
-        <label for="setSel">Choose test set</label>
-        <select id="setSel">
-          <option value="set1">Set 1: /ɪ/ vs /iː/ (short vs long)</option>
-          <option value="set2">Set 2: /ɪ/ vs /eɪ/ (short vs diphthong)</option>
-        </select>
-      </div>
+  <footer>
+    © Koala Spies Sydney · Modern English Australia · All Rights Reserved
+  </footer>
 
-      <div>
-        <label for="target">Target word (student says this)</label>
-        <select id="target"></select>
-      </div>
+  <!-- QRCode.js (client-side) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-      <div>
-        <label>Input level</label>
-        <div class="row">
-          <div class="meter" aria-label="input meter"><div id="levelFill"></div></div>
-          <span class="pill" id="levelTxt">0.000</span>
-        </div>
-        <p class="small" style="margin-top:8px">Aim for a steady voice (not whispering).</p>
-      </div>
-    </div>
+  <script>
+    /* =============================
+       CLICK-TO-PLAY WITH AUDIO
+       - Stops other videos
+       - First tap: play from start with sound
+       - Second tap: pause
+       ============================= */
 
-    <div class="result unclear" id="resultBox" style="display:none" aria-live="polite">
-      <div class="result-top">
-        <p class="big" id="verdict">—</p>
-        <span class="mastery" id="masteryTag" style="display:none">CLEAR</span>
-      </div>
+    const videos = Array.from(document.querySelectorAll(".vowel-video"));
+    let current = null;
 
-      <p class="small" id="detail">—</p>
+    videos.forEach(video => {
+      video.autoplay = false;
+      video.loop = false;
+      video.muted = true;
 
-      <div class="length-wrap">
-        <div class="length-label">
-          <span>Length</span>
-          <span id="lengthTag">—</span>
-        </div>
-        <div class="length-bar" aria-label="vowel length bar">
-          <div class="length-fill" id="lengthFill"></div>
-        </div>
-        <div class="length-hint" id="lengthHint">—</div>
-      </div>
-    </div>
-  </div>
+      video.addEventListener("click", async () => {
+        if (current && current !== video) {
+          current.pause();
+          current.currentTime = 0;
+          current.muted = true;
+          current = null;
+        }
 
-  <div class="card" id="set1Info">
-    <p class="section-title">Set 1 — /ɪ/ vs /iː/ (short vs long)</p>
-    <p class="section-sub">Short /ɪ/ is quick. Long /iː/ is held longer (smile and show teeth).</p>
-  </div>
+        if (!video.paused) {
+          video.pause();
+          return;
+        }
 
-  <div class="card" id="set2Info" style="display:none">
-    <p class="section-title">Set 2 — /ɪ/ vs /eɪ/ (short vs “ay”)</p>
-    <p class="section-sub">/eɪ/ usually lasts longer and has a glide. /ɪ/ stays short and steady.</p>
-  </div>
+        try {
+          video.currentTime = 0;
+          video.muted = false;
+          await video.play();
+          current = video;
+        } catch (err) {
+          console.log("Video play error:", err);
+        }
 
-  <div class="links">
-    <a href="iminimalpairs.html" class="btn">Practice</a>
-    <a href="A3pract.html" class="btn">Challenge Quiz</a>
-    <a href="A3pract.html" class="btn">Listening Gapfill</a>
-  </div>
-</main>
-
-<footer>
-  © Koala Spies Sydney · Modern English Australia · All Rights Reserved
-</footer>
-
-<script>
-(() => {
-  const startBtn  = document.getElementById("startBtn");
-  const recBtn    = document.getElementById("recBtn");
-  const resetBtn  = document.getElementById("resetBtn");
-  const statusEl  = document.getElementById("status");
-  const streakPill = document.getElementById("streakPill");
-
-  const levelFill = document.getElementById("levelFill");
-  const levelTxt  = document.getElementById("levelTxt");
-  const setSel    = document.getElementById("setSel");
-  const targetSel = document.getElementById("target");
-
-  const resultBox = document.getElementById("resultBox");
-  const verdictEl = document.getElementById("verdict");
-  const detailEl  = document.getElementById("detail");
-
-  const lengthFill = document.getElementById("lengthFill");
-  const lengthTag  = document.getElementById("lengthTag");
-  const lengthHint = document.getElementById("lengthHint");
-
-  const masteryTag = document.getElementById("masteryTag");
-
-  const set1Info  = document.getElementById("set1Info");
-  const set2Info  = document.getElementById("set2Info");
-
-  const SETS = {
-    set1: {
-      title: "Set 1 (/ɪ/ vs /iː/)",
-      options: [
-        { label: "ship (/ɪ/)",  expect: "short" },
-        { label: "sheep (/iː/)", expect: "long" },
-        { label: "bit (/ɪ/)",   expect: "short" },
-        { label: "beat (/iː/)",  expect: "long" },
-        { label: "live (/ɪ/)",  expect: "short" },
-        { label: "leave (/iː/)", expect: "long" }
-      ]
-    },
-    set2: {
-      title: "Set 2 (/ɪ/ vs /eɪ/)",
-      options: [
-        { label: "bit (/ɪ/)",   expect: "short" },
-        { label: "bait (/eɪ/)", expect: "ay" },
-        { label: "sit (/ɪ/)",   expect: "short" },
-        { label: "sate (/eɪ/)", expect: "ay" },
-        { label: "hit (/ɪ/)",   expect: "short" },
-        { label: "hate (/eɪ/)", expect: "ay" },
-        { label: "ship (/ɪ/)",  expect: "short" },
-        { label: "shape (/eɪ/)", expect: "ay" }
-      ]
-    }
-  };
-
-  let ctx, mic, analyser, data;
-  let rafId = null;
-
-  let listening = false;
-  let samples = [];
-  let t0 = 0;
-
-  // Student-facing mastery: 2 correct in a row
-  let streak = 0;
-
-  const VAD_ON = 0.03;
-  const VAD_OFF = 0.02;
-  const MIN_SEG_MS = 60;
-  const MAX_LISTEN_MS = 1400;
-
-  const THRESH = {
-    set1: { shortMax: 180, longMin: 220 },
-    set2: { shortMax: 190, longMin: 260 }
-  };
-
-  // For the visual length bar (student-facing)
-  const BAR_MAX = {
-    set1: 360, // ms shown as 0-100%
-    set2: 520
-  };
-
-  function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
-
-  function setStreak(n){
-    streak = n;
-    streakPill.textContent = "Streak: " + streak;
-  }
-
-  function clearResultUI(){
-    resultBox.style.display = "none";
-    verdictEl.textContent = "—";
-    detailEl.textContent = "—";
-
-    resultBox.className = "result unclear";
-    lengthFill.style.width = "0%";
-    lengthTag.textContent = "—";
-    lengthHint.textContent = "—";
-    masteryTag.style.display = "none";
-  }
-
-  function populateTargets(setKey){
-    targetSel.innerHTML = "";
-    SETS[setKey].options.forEach((o, idx) => {
-      const opt = document.createElement("option");
-      opt.value = o.expect;     // short | long | ay
-      opt.textContent = o.label;
-      targetSel.appendChild(opt);
-      if (idx === 0) targetSel.selectedIndex = 0;
+        video.onended = () => {
+          video.pause();
+          video.currentTime = 0;
+          video.muted = true;
+          if (current === video) current = null;
+        };
+      });
     });
 
-    if (setKey === "set1") { set1Info.style.display = ""; set2Info.style.display = "none"; }
-    else { set1Info.style.display = "none"; set2Info.style.display = ""; }
+    /* =============================
+       STICKY QR GENERATOR
+       - Toggles panel
+       - Generates QR once (current page URL)
+       ============================= */
 
-    clearResultUI();
-    setStreak(0);
-  }
+    const qrToggle = document.getElementById("qrToggle");
+    const qrPanel  = document.getElementById("qrPanel");
+    const qrTarget = document.getElementById("qrcode");
+    let qrMade = false;
 
-  function rmsFromTimeDomain(arr){
-    let sum = 0;
-    for (let i=0;i<arr.length;i++){
-      const v = (arr[i]-128)/128;
-      sum += v*v;
-    }
-    return Math.sqrt(sum/arr.length);
-  }
+    function openQR(){
+      qrPanel.classList.add("open");
+      qrPanel.setAttribute("aria-hidden", "false");
+      qrToggle.setAttribute("aria-expanded", "true");
 
-  function tick(){
-    if (analyser){
-      analyser.getByteTimeDomainData(data);
-      const rms = rmsFromTimeDomain(data);
-
-      const pct = Math.max(0, Math.min(1, rms * 6));
-      levelFill.style.width = (pct * 100).toFixed(1) + "%";
-      levelTxt.textContent = rms.toFixed(3);
-
-      if (listening){
-        const t = performance.now() - t0;
-        samples.push({ t, rms });
-
-        if (t > MAX_LISTEN_MS){
-          stopListening();
-          analyseAndReport();
-        }
-      }
-    }
-    rafId = requestAnimationFrame(tick);
-  }
-
-  async function ensureAudioRunning(){
-    if (ctx && ctx.state !== "running") {
-      try { await ctx.resume(); } catch(e) {}
-    }
-  }
-
-  async function initMic(){
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    mic = ctx.createMediaStreamSource(stream);
-
-    analyser = ctx.createAnalyser();
-    analyser.fftSize = 2048;
-    data = new Uint8Array(analyser.fftSize);
-    mic.connect(analyser);
-
-    if (!rafId) tick();
-
-    setStatus("microphone enabled");
-    startBtn.disabled = true;
-    recBtn.disabled = false;
-    resetBtn.disabled = false;
-  }
-
-  function reset(){
-    listening = false;
-    samples = [];
-    clearResultUI();
-    setStatus(startBtn.disabled ? "ready" : "not started");
-  }
-
-  async function startListening(){
-    if (!ctx) return;
-    await ensureAudioRunning();
-    reset();
-    listening = true;
-    t0 = performance.now();
-    setStatus("listening… speak now");
-  }
-
-  function stopListening(){
-    listening = false;
-    setStatus("checking…");
-  }
-
-  function findVoicedSegments(){
-    const segs = [];
-    let inSeg = false;
-    let segStart = 0;
-
-    for (let i=0;i<samples.length;i++){
-      const {t, rms} = samples[i];
-
-      if (!inSeg && rms >= VAD_ON){
-        inSeg = true;
-        segStart = t;
-      } else if (inSeg && rms <= VAD_OFF){
-        const segEnd = t;
-        if (segEnd - segStart >= MIN_SEG_MS) segs.push([segStart, segEnd]);
-        inSeg = false;
+      if (!qrMade && window.QRCode) {
+        qrTarget.innerHTML = "";
+        new QRCode(qrTarget, {
+          text: window.location.href,
+          width: 140,
+          height: 140,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        qrMade = true;
       }
     }
 
-    if (inSeg){
-      const lastT = samples.length ? samples[samples.length-1].t : 0;
-      if (lastT - segStart >= MIN_SEG_MS) segs.push([segStart, lastT]);
-    }
-    return segs;
-  }
-
-  function classifyDuration(setKey, dur){
-    const { shortMax, longMin } = THRESH[setKey];
-    if (dur <= shortMax) return "short";
-    if (dur >= longMin) return (setKey === "set2") ? "ay" : "long";
-    return "unclear";
-  }
-
-  function expectedLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "—";
-  }
-
-  function heardLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "UNCLEAR";
-  }
-
-  function applyLengthBar(setKey, dur){
-    const max = BAR_MAX[setKey] || 400;
-    const pct = Math.max(0, Math.min(100, (dur / max) * 100));
-    lengthFill.style.width = pct.toFixed(1) + "%";
-    lengthTag.textContent = Math.round(dur) + " ms";
-  }
-
-  function studentTip(setKey, expected, heard){
-    if (heard === "unclear"){
-      return "Try again. Use a steady voice and normal volume.";
-    }
-    if (expected === heard){
-      if (expected === "short") return "Good. Keep it quick and light.";
-      if (expected === "long") return "Good. Hold it longer and keep the sound steady.";
-      if (expected === "ay") return "Good. Keep the glide (e → i) and make it longer than /ɪ/.";
-      return "Good.";
+    function closeQR(){
+      qrPanel.classList.remove("open");
+      qrPanel.setAttribute("aria-hidden", "true");
+      qrToggle.setAttribute("aria-expanded", "false");
     }
 
-    // Wrong but clear
-    if (setKey === "set1"){
-      if (expected === "long" && heard === "short") return "Too short. Smile and hold the vowel longer.";
-      if (expected === "short" && heard === "long") return "Too long. Say it quickly without holding it.";
-    } else {
-      if (expected === "ay" && heard === "short") return "Too short. Make it longer and add the glide (e → i).";
-      if (expected === "short" && heard === "ay") return "Too long. Keep it short and avoid the glide.";
-    }
-    return "Try again.";
-  }
+    qrToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = qrPanel.classList.contains("open");
+      if (isOpen) closeQR(); else openQR();
+    });
 
-  function setResultClass(kind){
-    resultBox.className = "result " + kind;
-  }
+    // Close if you tap/click outside
+    document.addEventListener("click", (e) => {
+      if (!qrPanel.classList.contains("open")) return;
+      const clickedInside = qrPanel.contains(e.target) || qrToggle.contains(e.target);
+      if (!clickedInside) closeQR();
+    });
 
-  function analyseAndReport(){
-    const setKey = setSel.value;
-    const segs = findVoicedSegments();
-
-    resultBox.style.display = "block";
-    masteryTag.style.display = "none";
-
-    if (!segs.length){
-      setResultClass("unclear");
-      verdictEl.textContent = "No clear sound";
-      detailEl.textContent = "Speak a little louder and keep the vowel steady.";
-      lengthFill.style.width = "0%";
-      lengthTag.textContent = "—";
-      lengthHint.textContent = "Aim for one clear vowel sound (not whispering).";
-      setStatus("ready");
-      setStreak(0);
-      return;
-    }
-
-    // Longest voiced segment
-    let longest = segs[0];
-    for (const s of segs){
-      if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
-    }
-    const dur = longest[1] - longest[0];
-
-    const heard = classifyDuration(setKey, dur); // short | long | ay | unclear
-    const expected = targetSel.value;            // short | long | ay
-
-    applyLengthBar(setKey, dur);
-
-    // Student-facing text
-    if (heard === "unclear"){
-      setResultClass("unclear");
-      verdictEl.textContent = "Unclear length";
-      detailEl.textContent = studentTip(setKey, expected, heard);
-      lengthHint.textContent = "Try a single clean vowel sound. Don’t whisper.";
-      setStreak(0);
-      setStatus("ready");
-      return;
-    }
-
-    const ok = (heard === expected);
-
-    if (ok){
-      // Different colour for "short correct" vs "other correct" (helps students see contrast)
-      setResultClass(heard === "short" ? "shortok" : "correct");
-      verdictEl.textContent = "Correct: " + expectedLabel(expected);
-      detailEl.textContent = studentTip(setKey, expected, heard);
-
-      setStreak(streak + 1);
-
-      if (streak >= 2){
-        masteryTag.style.display = "";
-        masteryTag.textContent = "CLEAR";
-      }
-
-      lengthHint.textContent =
-        "You held the sound for the right amount of time. Try another word or keep practising.";
-
-    } else {
-      setResultClass("wrong");
-      verdictEl.textContent = "Not quite";
-      detailEl.textContent =
-        "Target: " + expectedLabel(expected) + " • You did: " + heardLabel(heard) + ". " +
-        studentTip(setKey, expected, heard);
-
-      lengthHint.textContent = "Use the tip above, then press Try Again and repeat.";
-      setStreak(0);
-    }
-
-    setStatus("ready");
-  }
-
-  // Events
-  setSel.addEventListener("change", () => populateTargets(setSel.value));
-  targetSel.addEventListener("change", () => {
-    clearResultUI();
-    setStreak(0);
-  });
-
-  startBtn.addEventListener("click", async () => {
-    try { await initMic(); }
-    catch(e){
-      setStatus("microphone blocked");
-      alert("Microphone access was blocked. Please allow mic permission and reload.");
-    }
-  });
-
-  const holdStart = async (e) => {
-    e.preventDefault();
-    if (!ctx) return;
-    await startListening();
-  };
-
-  const holdEnd = (e) => {
-    e.preventDefault();
-    if (!listening) return;
-    stopListening();
-    analyseAndReport();
-  };
-
-  recBtn.addEventListener("mousedown", holdStart);
-  recBtn.addEventListener("mouseup", holdEnd);
-  recBtn.addEventListener("mouseleave", holdEnd);
-
-  recBtn.addEventListener("touchstart", holdStart, {passive:false});
-  recBtn.addEventListener("touchend", holdEnd, {passive:false});
-  recBtn.addEventListener("touchcancel", holdEnd, {passive:false});
-
-  resetBtn.addEventListener("click", reset);
-
-  // Init UI
-  populateTargets("set1");
-  setStatus("not started");
-  setStreak(0);
-})();
-</script>
-
+    // Close on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeQR();
+    });
+  </script>
 </body>
 </html>
+
+
 
 
