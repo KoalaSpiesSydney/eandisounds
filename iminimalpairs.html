@@ -3,67 +3,191 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Long vs Short i (/iː/ vs /ɪ/) – Minimal Pair Checker</title>
+<title>Minimal Pair Checker – /iː/ vs /ɪ/ and /ɪ/ vs /eɪ/ | Modern English Australia</title>
+
 <style>
   :root{
-    --bg:#f5f5f5;
-    --bar:#1e1f21;
-    --panel:#ffffff;
-    --ink:#1e1e1e;
-    --muted:#6b737a;
-    --accent:#ff7a1a;
+    --bg:#f2f5f6;
+    --card:#1e1f21;
+    --accent:#009688;
+    --accent-light:#33bba6;
+    --ink:#1c1e20;
+    --ink-light:#f5f5f5;
+    --success:#20c997;
+    --error:#e74c3c;
+    --shadow:0 6px 24px rgba(0,0,0,.25);
+    --radius:14px;
     --line:rgba(0,0,0,.12);
-    --shadow:0 10px 28px rgba(0,0,0,.14);
-    --radius:16px;
+    --muted:#6b737a;
+
+    /* spacing helpers */
+    --max:980px;
+    --pad:16px;
+    --gap:12px;
   }
-  *{box-sizing:border-box}
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+
   body{
     margin:0;
-    font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
     background:var(--bg);
     color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    -webkit-text-size-adjust:100%;
+    text-rendering:optimizeLegibility;
   }
+
+  /* ===== HEADER (sticky) ===== */
   header{
-    background:var(--bar);
-    color:#fff;
-    padding:18px 16px;
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--card);
+    color:var(--accent);
+    text-align:center;
+    padding:1.05rem 1rem;
+    font-size:1.35rem;
+    font-weight:800;
+    letter-spacing:2px;
+    border-bottom:1px solid var(--line);
   }
-  header h1{margin:0;font-size:18px;font-weight:700}
-  header p{margin:6px 0 0;color:rgba(255,255,255,.75);font-size:13px}
-  main{max-width:900px;margin:18px auto;padding:0 16px}
+  header span{
+    color:var(--ink-light);
+    font-weight:300;
+    display:block;
+    font-size:0.95rem;
+    letter-spacing:3px;
+    margin-top:0.35rem;
+  }
+  @media (min-width:768px){
+    header{ font-size:1.5rem; padding:1.2rem 1rem; }
+    header span{ font-size:1rem; }
+  }
+
+  /* ===== MAIN (make it able to push links to bottom) ===== */
+  main{
+    width:100%;
+    max-width:var(--max);
+    margin:0 auto;
+    padding:18px var(--pad) 24px;
+    display:flex;
+    flex-direction:column;
+
+    /* KEY FIX: allow main to grow so margin-top:auto can push links down */
+    flex:1;
+  }
+
+  /* Title */
+  .page-title{
+    margin:0 0 12px;
+    font-size:18px;
+    font-weight:900;
+    color:var(--ink);
+    line-height:1.25;
+  }
+  @media (min-width:768px){
+    .page-title{ font-size:20px; margin-bottom:14px; }
+  }
+
   .card{
-    background:var(--panel);
+    background:#fff;
     border:1px solid var(--line);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     padding:16px;
+    margin-bottom:14px;
   }
-  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  @media (min-width:768px){
+    .card{ padding:18px; }
+  }
+
+  .section-title{
+    margin:0 0 10px;
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:.2px;
+  }
+  .section-sub{
+    margin:0 0 14px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  .row{
+    display:flex;
+    gap:var(--gap);
+    flex-wrap:wrap;
+    align-items:center;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:var(--gap);
+    margin-top:12px;
+  }
+  @media (max-width:420px){
+    .grid{ grid-template-columns:1fr; }
+  }
+
+  /* Buttons (responsive sizing) */
   .btn{
     border:1px solid var(--line);
     background:#fff;
-    border-radius:999px;
-    padding:12px 16px;
-    font-weight:700;
+    padding:.8rem 1.2rem;
+    border-radius:10px;
+    font-weight:800;
     cursor:pointer;
     user-select:none;
+    text-decoration:none;
+    color:inherit;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:44px;            /* good tap target */
+    white-space:nowrap;
   }
-  .btn.primary{background:var(--accent);border-color:transparent;color:#fff}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.primary{ background:var(--accent); border-color:transparent; color:#fff; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
+  @media (hover:hover){
+    .btn:hover{ background:var(--accent-light); color:#fff; border-color:transparent; }
+    .btn.primary:hover{ background:var(--accent-light); }
+  }
+  @media (max-width:420px){
+    .btn{ width:100%; }         /* stacked buttons on small phones */
+  }
+
   .pill{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:8px 12px;border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border-radius:999px;
     border:1px solid var(--line);
     color:var(--muted);
     font-size:13px;
+    background:#fff;
   }
+
   .meter{
-    height:10px;border-radius:999px;
+    height:10px;
+    border-radius:999px;
     background:rgba(0,0,0,.08);
-    overflow:hidden;flex:1;min-width:220px;
+    overflow:hidden;
+    flex:1;
+    min-width:220px;
     border:1px solid var(--line);
   }
-  .meter > div{height:100%;width:0%}
+  @media (max-width:420px){
+    .meter{ min-width:140px; }
+  }
+  .meter > div{ height:100%; width:0%; background:var(--accent); }
+
   .result{
     margin-top:14px;
     padding:14px;
@@ -71,27 +195,106 @@
     border:1px solid var(--line);
     background:rgba(0,0,0,.02);
   }
-  .big{font-size:18px;font-weight:800;margin:0 0 6px}
-  .small{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:12px;
-    margin-top:12px;
+  .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
+  .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
+
+  label{
+    display:block;
+    font-weight:800;
+    font-size:13px;
+    margin:10px 0 6px;
+    color:var(--muted);
   }
+
   select{
-    padding:10px 12px;border-radius:12px;border:1px solid var(--line);
-    background:#fff;font-weight:700;
+    width:100%;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-weight:800;
+    min-height:44px;
   }
+
+  /* ===== LINKS BAR (push to bottom + tidy spacing) ===== */
+  .links{
+    margin-top:auto;            /* pushes to bottom of main */
+    padding-top:14px;
+    display:flex;
+    justify-content:center;
+    gap:.9rem;
+    flex-wrap:wrap;
+    
+
+    /* nice separation from content */
+    border-top:1px solid var(--line);
+  }
+  @media (max-width:420px){
+    .links{ gap:10px; }
+  }
+
+  /* ===== FOOTER ===== */
+  footer{
+    text-align:center;
+    background:var(--card);
+    color:var(--ink-light);
+    padding:1.1rem 1rem;
+    font-size:.9rem;
+    border-top:1px solid var(--line);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+  .home-btn{
+  position:absolute;
+  right:12px;
+  top:12px;
+  padding:.45rem .8rem;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:var(--ink-light);
+  font-weight:800;
+  font-size:.85rem;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+@media (hover:hover){
+  .home-btn:hover{
+    background:var(--accent);
+    border-color:transparent;
+    color:#fff;
+  }
+}
+.back-wrap{
+  display:flex;
+  justify-content:flex-start;
+  margin-top:24px;
+}
+
+.back-btn{
+  background:#33bba6;
+}
+@media (max-width:420px){
+  .back-wrap{ justify-content:center; }
+}
+
 </style>
 </head>
+
 <body>
+
 <header>
-  <h1>Long vs Short i: /iː/ vs /ɪ/ (Minimal Pairs)</h1>
-  <p>Modern English Australia · Koala Spies Sydney</p>
+  <a href="index.html" class="home-btn" aria-label="Home">Home</a>
+
+  MODERN ENGLISH AUSTRALIA
+  <span>Koala Spies Sydney · Minimal Pair Checker</span>
 </header>
 
 <main>
+  <h1 class="page-title">Minimal Pair Checker (Microphone) — Vowel Length</h1>
+
   <div class="card">
     <div class="row">
       <button id="startBtn" class="btn primary">Enable Microphone</button>
@@ -102,22 +305,23 @@
 
     <div class="grid">
       <div>
-        <p class="small" style="margin:10px 0 6px">Target word (student says this)</p>
-        <select id="target">
-          <option value="short">ship (/ɪ/)</option>
-          <option value="long">sheep (/iː/)</option>
-          <option value="short">bit (/ɪ/)</option>
-          <option value="long">beat (/iː/)</option>
-          <option value="short">live (/ɪ/)</option>
-          <option value="long">leave (/iː/)</option>
+        <label for="setSel">Choose test set</label>
+        <select id="setSel">
+          <option value="set1">Set 1: /ɪ/ vs /iː/ (short vs long)</option>
+          <option value="set2">Set 2: /ɪ/ vs /eɪ/ (short vs diphthong)</option>
         </select>
       </div>
 
       <div>
-        <p class="small" style="margin:10px 0 6px">Input level</p>
+        <label for="target">Target word (student says this)</label>
+        <select id="target"></select>
+      </div>
+
+      <div>
+        <label>Input level</label>
         <div class="row">
           <div class="meter" aria-label="input meter"><div id="levelFill"></div></div>
-          <span class="pill" id="levelTxt">0.00</span>
+          <span class="pill" id="levelTxt">0.000</span>
         </div>
         <p class="small" style="margin-top:8px">Aim for a steady voice (not whispering).</p>
       </div>
@@ -128,38 +332,112 @@
       <p class="small" id="detail">—</p>
     </div>
   </div>
+
+  <div class="card" id="set1Info">
+    <p class="section-title">Set 1 — /ɪ/ vs /iː/ (short vs long)</p>
+    <p class="section-sub">Examples: ship/sheep, bit/beat, live/leave. The checker uses detected voiced duration as a proxy for vowel length.</p>
+  </div>
+
+  <div class="card" id="set2Info" style="display:none">
+    <p class="section-title">Set 2 — /ɪ/ vs /eɪ/ (short vs “ay”)</p>
+    <p class="section-sub">Examples: bit/bait, sit/sate, hit/hate, ship/shape. The checker uses voiced duration; /eɪ/ is typically longer than /ɪ/.</p>
+  </div>
+
+  <div class="back-wrap">
+  <button class="btn back-btn" onclick="history.back()">← Back</button>
+</div>
+
+
+  <div class="links">
+    <a href="iminimalpairs.html" class="btn">Practice</a>
+    <a href="A3pract.html" class="btn">Challenge Quiz</a>
+    <a href="A3pract.html" class="btn">Listening Gapfill</a>
+  </div>
 </main>
+
+<footer>
+  © Koala Spies Sydney · Modern English Australia · All Rights Reserved
+</footer>
 
 <script>
 (() => {
-  const startBtn = document.getElementById("startBtn");
-  const recBtn = document.getElementById("recBtn");
-  const resetBtn = document.getElementById("resetBtn");
-  const statusEl = document.getElementById("status");
+  const startBtn  = document.getElementById("startBtn");
+  const recBtn    = document.getElementById("recBtn");
+  const resetBtn  = document.getElementById("resetBtn");
+  const statusEl  = document.getElementById("status");
   const levelFill = document.getElementById("levelFill");
-  const levelTxt = document.getElementById("levelTxt");
+  const levelTxt  = document.getElementById("levelTxt");
+  const setSel    = document.getElementById("setSel");
   const targetSel = document.getElementById("target");
   const resultBox = document.getElementById("resultBox");
   const verdictEl = document.getElementById("verdict");
-  const detailEl = document.getElementById("detail");
+  const detailEl  = document.getElementById("detail");
+  const set1Info  = document.getElementById("set1Info");
+  const set2Info  = document.getElementById("set2Info");
+
+  const SETS = {
+    set1: {
+      title: "Set 1 (/ɪ/ vs /iː/)",
+      options: [
+        { label: "ship (/ɪ/)",  expect: "short" },
+        { label: "sheep (/iː/)", expect: "long" },
+        { label: "bit (/ɪ/)",   expect: "short" },
+        { label: "beat (/iː/)",  expect: "long" },
+        { label: "live (/ɪ/)",  expect: "short" },
+        { label: "leave (/iː/)", expect: "long" }
+      ]
+    },
+    set2: {
+      title: "Set 2 (/ɪ/ vs /eɪ/)",
+      options: [
+        { label: "bit (/ɪ/)",   expect: "short" },
+        { label: "bait (/eɪ/)", expect: "ay" },
+        { label: "sit (/ɪ/)",   expect: "short" },
+        { label: "sate (/eɪ/)", expect: "ay" },
+        { label: "hit (/ɪ/)",   expect: "short" },
+        { label: "hate (/eɪ/)", expect: "ay" },
+        { label: "ship (/ɪ/)",  expect: "short" },
+        { label: "shape (/eɪ/)", expect: "ay" }
+      ]
+    }
+  };
 
   let ctx, mic, analyser, data;
   let rafId = null;
 
-  // Recording buffer (we're not saving a file; we just sample energy over time)
   let listening = false;
-  let samples = []; // {t, rms}
+  let samples = [];
   let t0 = 0;
 
-  // Tunable thresholds (reasonable defaults for /ɪ/ vs /iː/)
-  const VAD_ON = 0.03;   // rms threshold for "speech present"
-  const VAD_OFF = 0.02;  // rms threshold for "speech ended"
-  const MIN_SEG_MS = 60; // ignore tiny blips
-  const SHORT_MAX_MS = 180; // <= this is likely /ɪ/
-  const LONG_MIN_MS = 220;  // >= this is likely /iː/
-  const MAX_LISTEN_MS = 1200;
+  const VAD_ON = 0.03;
+  const VAD_OFF = 0.02;
+  const MIN_SEG_MS = 60;
+  const MAX_LISTEN_MS = 1400;
+
+  const THRESH = {
+    set1: { shortMax: 180, longMin: 220 },
+    set2: { shortMax: 190, longMin: 260 }
+  };
 
   function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
+
+  function populateTargets(setKey){
+    targetSel.innerHTML = "";
+    SETS[setKey].options.forEach((o, idx) => {
+      const opt = document.createElement("option");
+      opt.value = o.expect;
+      opt.textContent = o.label;
+      targetSel.appendChild(opt);
+      if (idx === 0) targetSel.selectedIndex = 0;
+    });
+
+    if (setKey === "set1") { set1Info.style.display = ""; set2Info.style.display = "none"; }
+    else { set1Info.style.display = "none"; set2Info.style.display = ""; }
+
+    resultBox.style.display = "none";
+    verdictEl.textContent = "—";
+    detailEl.textContent = "—";
+  }
 
   function rmsFromTimeDomain(arr){
     let sum = 0;
@@ -171,25 +449,31 @@
   }
 
   function tick(){
-    analyser.getByteTimeDomainData(data);
-    const rms = rmsFromTimeDomain(data);
+    if (analyser){
+      analyser.getByteTimeDomainData(data);
+      const rms = rmsFromTimeDomain(data);
 
-    // meter
-    const pct = Math.max(0, Math.min(1, rms * 6)); // purely for UI scaling
-    levelFill.style.width = (pct * 100).toFixed(1) + "%";
-    levelTxt.textContent = rms.toFixed(3);
+      const pct = Math.max(0, Math.min(1, rms * 6));
+      levelFill.style.width = (pct * 100).toFixed(1) + "%";
+      levelTxt.textContent = rms.toFixed(3);
 
-    if (listening){
-      const t = performance.now() - t0;
-      samples.push({ t, rms });
+      if (listening){
+        const t = performance.now() - t0;
+        samples.push({ t, rms });
 
-      if (t > MAX_LISTEN_MS){
-        stopListening();
-        analyseAndReport();
+        if (t > MAX_LISTEN_MS){
+          stopListening();
+          analyseAndReport();
+        }
       }
     }
-
     rafId = requestAnimationFrame(tick);
+  }
+
+  async function ensureAudioRunning(){
+    if (ctx && ctx.state !== "running") {
+      try { await ctx.resume(); } catch(e) {}
+    }
   }
 
   async function initMic(){
@@ -200,7 +484,6 @@
     analyser = ctx.createAnalyser();
     analyser.fftSize = 2048;
     data = new Uint8Array(analyser.fftSize);
-
     mic.connect(analyser);
 
     if (!rafId) tick();
@@ -220,7 +503,9 @@
     setStatus(startBtn.disabled ? "ready" : "not started");
   }
 
-  function startListening(){
+  async function startListening(){
+    if (!ctx) return;
+    await ensureAudioRunning();
     reset();
     listening = true;
     t0 = performance.now();
@@ -233,7 +518,6 @@
   }
 
   function findVoicedSegments(){
-    // Simple hysteresis VAD over RMS to find "speech present" regions.
     const segs = [];
     let inSeg = false;
     let segStart = 0;
@@ -250,7 +534,7 @@
         inSeg = false;
       }
     }
-    // if still in segment at end
+
     if (inSeg){
       const lastT = samples.length ? samples[samples.length-1].t : 0;
       if (lastT - segStart >= MIN_SEG_MS) segs.push([segStart, lastT]);
@@ -258,8 +542,24 @@
     return segs;
   }
 
+  function classifyDuration(setKey, dur){
+    const { shortMax, longMin } = THRESH[setKey];
+    if (dur <= shortMax) return "short";
+    if (dur >= longMin) return (setKey === "set2") ? "ay" : "long";
+    return "unclear";
+  }
+
+  function prettyLabel(label){
+    if (label === "short") return "SHORT /ɪ/";
+    if (label === "long") return "LONG /iː/";
+    if (label === "ay") return "DIPHTHONG /eɪ/";
+    return "UNCLEAR";
+  }
+
   function analyseAndReport(){
+    const setKey = setSel.value;
     const segs = findVoicedSegments();
+
     if (!segs.length){
       resultBox.style.display = "block";
       verdictEl.textContent = "No clear vowel detected";
@@ -268,49 +568,56 @@
       return;
     }
 
-    // Take the longest voiced segment as best proxy for vowel length
     let longest = segs[0];
     for (const s of segs){
       if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
     }
-    const dur = longest[1] - longest[0]; // ms
+    const dur = longest[1] - longest[0];
 
-    // Classification
-    let label = "unclear";
-    if (dur <= SHORT_MAX_MS) label = "short";
-    if (dur >= LONG_MIN_MS) label = "long";
-
-    const expected = targetSel.value; // "short" or "long"
-    const expectedTxt = expected === "long" ? "LONG /iː/" : "SHORT /ɪ/";
-    const heardTxt = label === "long" ? "LONG /iː/" : label === "short" ? "SHORT /ɪ/" : "UNCLEAR";
+    const heard = classifyDuration(setKey, dur);
+    const expected = targetSel.value;
+    const expectedTxt = prettyLabel(expected);
+    const heardTxt = prettyLabel(heard);
 
     let verdict;
-    if (label === "unclear"){
+    if (heard === "unclear"){
       verdict = "Unclear length";
-    } else if (label === expected){
-      verdict = "Correct length: " + heardTxt;
+    } else if (heard === expected){
+      verdict = "Correct: " + heardTxt;
     } else {
-      verdict = "Wrong length: sounded like " + heardTxt;
+      verdict = "Not quite: sounded like " + heardTxt;
     }
 
-    // Confidence (simple distance from boundary)
+    const { shortMax, longMin } = THRESH[setKey];
     let conf = 0.5;
-    if (label === "short") conf = Math.max(0.2, Math.min(0.95, (SHORT_MAX_MS - dur) / SHORT_MAX_MS + 0.35));
-    if (label === "long") conf = Math.max(0.2, Math.min(0.95, (dur - LONG_MIN_MS) / LONG_MIN_MS + 0.35));
+    if (heard === "short") conf = Math.max(0.2, Math.min(0.95, (shortMax - dur) / shortMax + 0.35));
+    if (heard === "long" || heard === "ay") conf = Math.max(0.2, Math.min(0.95, (dur - longMin) / longMin + 0.35));
     conf = Math.round(conf * 100);
+
+    let tip = "Try again with a steady vowel and normal volume.";
+    if (setKey === "set1"){
+      if (heard === "short") tip = "For /iː/, smile and stretch the vowel longer.";
+      if (heard === "long") tip = "For /ɪ/, keep it shorter and lighter (don’t hold it).";
+    } else {
+      if (heard === "short") tip = "For /eɪ/, glide from /e/ toward /ɪ/ and keep it longer.";
+      if (heard === "ay") tip = "For /ɪ/, keep it short and avoid the glide.";
+    }
 
     resultBox.style.display = "block";
     verdictEl.textContent = verdict;
     detailEl.textContent =
-      `Expected: ${expectedTxt}. Detected voiced duration: ${Math.round(dur)} ms. Confidence: ${conf}%. ` +
-      (label === "short" ? "For /iː/, stretch the vowel longer." :
-       label === "long" ? "For /ɪ/, keep it shorter and lighter." :
-       "Try again with a steady vowel and normal volume.");
+      `Set: ${SETS[setKey].title}. Expected: ${expectedTxt}. Detected voiced duration: ${Math.round(dur)} ms. Confidence: ${conf}%. ${tip}`;
 
     setStatus("ready");
   }
 
-  // Events
+  setSel.addEventListener("change", () => populateTargets(setSel.value));
+  targetSel.addEventListener("change", () => {
+    resultBox.style.display = "none";
+    verdictEl.textContent = "—";
+    detailEl.textContent = "—";
+  });
+
   startBtn.addEventListener("click", async () => {
     try { await initMic(); }
     catch(e){
@@ -319,12 +626,12 @@
     }
   });
 
-  // Hold-to-speak behavior (mouse + touch)
-  const holdStart = (e) => {
+  const holdStart = async (e) => {
     e.preventDefault();
     if (!ctx) return;
-    startListening();
+    await startListening();
   };
+
   const holdEnd = (e) => {
     e.preventDefault();
     if (!listening) return;
@@ -342,8 +649,10 @@
 
   resetBtn.addEventListener("click", reset);
 
+  populateTargets("set1");
   setStatus("not started");
 })();
 </script>
+
 </body>
 </html>
