@@ -13,13 +13,10 @@
     --accent-light:#33bba6;
     --ink:#1c1e20;
     --ink-light:#f5f5f5;
-    --success:#20c997;
-    --error:#e74c3c;
     --shadow:0 6px 24px rgba(0,0,0,.25);
     --radius:14px;
     --line:rgba(0,0,0,.12);
     --muted:#6b737a;
-
     --max:980px;
     --pad:16px;
     --gap:12px;
@@ -61,6 +58,22 @@
     letter-spacing:3px;
     margin-top:0.35rem;
   }
+  .home-btn{
+    position:absolute;
+    right:12px;
+    top:12px;
+    padding:.45rem .8rem;
+    border-radius:10px;
+    background:rgba(255,255,255,.08);
+    color:var(--ink-light);
+    font-weight:800;
+    font-size:.85rem;
+    text-decoration:none;
+    border:1px solid rgba(255,255,255,.18);
+  }
+  @media (hover:hover){
+    .home-btn:hover{ background:var(--accent); border-color:transparent; color:#fff; }
+  }
   @media (min-width:768px){
     header{ font-size:1.5rem; padding:1.2rem 1rem; }
     header span{ font-size:1rem; }
@@ -73,14 +86,13 @@
     padding:18px var(--pad) 24px;
     display:flex;
     flex-direction:column;
-    flex:1; /* KEY: allows links to sit at bottom */
+    flex:1;
   }
 
   .page-title{
-    margin:0 0 12px;
+    margin:0 0 10px;
     font-size:18px;
     font-weight:900;
-    color:var(--ink);
     line-height:1.25;
   }
   .page-sub{
@@ -90,8 +102,8 @@
     line-height:1.45;
   }
   @media (min-width:768px){
-    .page-title{ font-size:20px; margin-bottom:10px; }
-    .page-sub{ font-size:14px; margin-bottom:16px; }
+    .page-title{ font-size:20px; }
+    .page-sub{ font-size:14px; }
   }
 
   .card{
@@ -101,22 +113,6 @@
     box-shadow:var(--shadow);
     padding:16px;
     margin-bottom:14px;
-  }
-  @media (min-width:768px){
-    .card{ padding:18px; }
-  }
-
-  .section-title{
-    margin:0 0 10px;
-    font-size:15px;
-    font-weight:900;
-    letter-spacing:.2px;
-  }
-  .section-sub{
-    margin:0 0 14px;
-    color:var(--muted);
-    font-size:13px;
-    line-height:1.45;
   }
 
   .row{
@@ -188,9 +184,6 @@
   }
   .meter > div{ height:100%; width:0%; background:var(--accent); }
 
-  .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
-  .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
-
   label{
     display:block;
     font-weight:800;
@@ -209,7 +202,10 @@
     min-height:44px;
   }
 
-  /* Student-facing result styles */
+  .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
+  .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
+
+  /* Student-facing result */
   .result{
     margin-top:14px;
     padding:14px;
@@ -224,12 +220,11 @@
 
   .result-top{
     display:flex;
-    gap:10px;
     align-items:center;
     justify-content:space-between;
+    gap:10px;
     flex-wrap:wrap;
   }
-
   .mastery{
     display:inline-flex;
     align-items:center;
@@ -238,14 +233,12 @@
     border:1px solid var(--line);
     background:#fff;
     color:var(--muted);
-    font-weight:800;
+    font-weight:900;
     font-size:12px;
     letter-spacing:.2px;
   }
 
-  .length-wrap{
-    margin-top:10px;
-  }
+  .length-wrap{ margin-top:10px; }
   .length-label{
     display:flex;
     align-items:center;
@@ -253,7 +246,7 @@
     gap:10px;
     color:var(--muted);
     font-size:12px;
-    font-weight:800;
+    font-weight:900;
     letter-spacing:.2px;
     margin-bottom:6px;
   }
@@ -274,6 +267,28 @@
     color:var(--muted);
     font-size:12px;
     line-height:1.35;
+  }
+
+  .section-title{
+    margin:0 0 10px;
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:.2px;
+  }
+  .section-sub{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+  }
+
+  .back-wrap{
+    display:flex;
+    justify-content:flex-start;
+    margin-top:12px;
+  }
+  @media (max-width:420px){
+    .back-wrap{ justify-content:center; }
   }
 
   .links{
@@ -304,20 +319,19 @@
 <body>
 
 <header>
+  <a href="index.html" class="home-btn" aria-label="Home">Home</a>
   MODERN ENGLISH AUSTRALIA
   <span>Koala Spies Sydney · Minimal Pair Checker</span>
 </header>
 
 <main>
   <h1 class="page-title">Minimal Pair Checker (Microphone) — Vowel Length</h1>
-  <p class="page-sub">
-    Step 1: Choose a set and word. Step 2: Hold to Speak. Step 3: Try to get the correct sound twice in a row.
-  </p>
+  <p class="page-sub">Choose a set and word. Tap to Speak (tap again to stop). Try to get the correct sound twice in a row.</p>
 
   <div class="card">
     <div class="row">
       <button id="startBtn" class="btn primary">Enable Microphone</button>
-      <button id="recBtn" class="btn" disabled>Hold to Speak</button>
+      <button id="recBtn" class="btn" disabled>Tap to Speak</button>
       <button id="resetBtn" class="btn" disabled>Try Again</button>
       <span class="pill" id="status">Status: not started</span>
       <span class="pill" id="streakPill" aria-live="polite">Streak: 0</span>
@@ -352,7 +366,6 @@
         <p class="big" id="verdict">—</p>
         <span class="mastery" id="masteryTag" style="display:none">CLEAR</span>
       </div>
-
       <p class="small" id="detail">—</p>
 
       <div class="length-wrap">
@@ -375,7 +388,11 @@
 
   <div class="card" id="set2Info" style="display:none">
     <p class="section-title">Set 2 — /ɪ/ vs /eɪ/ (short vs “ay”)</p>
-    <p class="section-sub">/eɪ/ usually lasts longer and has a glide. /ɪ/ stays short and steady.</p>
+    <p class="section-sub">/eɪ/ is longer and has a glide. /ɪ/ stays short and steady.</p>
+  </div>
+
+  <div class="back-wrap">
+    <button class="btn" type="button" onclick="history.back()">← Back</button>
   </div>
 
   <div class="links">
@@ -390,95 +407,122 @@
 </footer>
 
 <script>
-(() => {
-  const startBtn  = document.getElementById("startBtn");
-  const recBtn    = document.getElementById("recBtn");
-  const resetBtn  = document.getElementById("resetBtn");
-  const statusEl  = document.getElementById("status");
-  const streakPill = document.getElementById("streakPill");
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
 
-  const levelFill = document.getElementById("levelFill");
-  const levelTxt  = document.getElementById("levelTxt");
-  const setSel    = document.getElementById("setSel");
-  const targetSel = document.getElementById("target");
+  const startBtn   = $("startBtn");
+  const recBtn     = $("recBtn");
+  const resetBtn   = $("resetBtn");
+  const statusEl   = $("status");
+  const streakPill = $("streakPill");
 
-  const resultBox = document.getElementById("resultBox");
-  const verdictEl = document.getElementById("verdict");
-  const detailEl  = document.getElementById("detail");
+  const levelFill  = $("levelFill");
+  const levelTxt   = $("levelTxt");
 
-  const lengthFill = document.getElementById("lengthFill");
-  const lengthTag  = document.getElementById("lengthTag");
-  const lengthHint = document.getElementById("lengthHint");
+  const setSel     = $("setSel");
+  const targetSel  = $("target");
 
-  const masteryTag = document.getElementById("masteryTag");
+  const resultBox  = $("resultBox");
+  const verdictEl  = $("verdict");
+  const detailEl   = $("detail");
 
-  const set1Info  = document.getElementById("set1Info");
-  const set2Info  = document.getElementById("set2Info");
+  const lengthFill = $("lengthFill");
+  const lengthTag  = $("lengthTag");
+  const lengthHint = $("lengthHint");
 
+  const masteryTag = $("masteryTag");
+  const set1Info   = $("set1Info");
+  const set2Info   = $("set2Info");
+
+  // ---- Hard fail message if IDs don't match your HTML ----
+  const required = {
+    startBtn, recBtn, resetBtn, statusEl, streakPill,
+    levelFill, levelTxt, setSel, targetSel,
+    resultBox, verdictEl, detailEl, lengthFill, lengthTag, lengthHint, masteryTag,
+    set1Info, set2Info
+  };
+
+  const missing = Object.entries(required).filter(([k,v]) => !v).map(([k]) => k);
+  if (missing.length) {
+    alert(
+      "Script can't find these IDs in your HTML:\n\n" +
+      missing.join(", ") +
+      "\n\nFix the IDs or paste the matching HTML."
+    );
+    return;
+  }
+
+  // =========================
+  // SETS (FIXED STRUCTURE + COMMAS)
+  // NOTE: set2 expects MUST use "ay" because classifyDuration returns "ay" for set2.
+  // =========================
   const SETS = {
     set1: {
       title: "Set 1 (/ɪ/ vs /iː/)",
       options: [
-        { label:"ship (/ɪ/)",        expect:"short" },
-        { label:"sheep (/iː/)",      expect:"long"  },
-        { label:"bit (/ɪ/)",         expect:"short" },
-        { label:"beat (/iː/)",       expect:"long"  },
-        { label:"hit (/ɪ/)",         expect:"short" },
-        { label:"heat (/iː/)",       expect:"long"  },
-        { label:"slip (/ɪ/)",        expect:"short" },
-        { label:"sleep (/iː/)",      expect:"long"  },
-        { label:"bin (/ɪ/)",         expect:"short" },
-        { label:"bean (/iː/)",       expect:"long"  },
-        { label:"been (/iː/)",       expect:"long"  },
-        { label:"sin (/ɪ/)",         expect:"short" },
-        { label:"scene (/iː/)",      expect:"long"  },
-        { label:"seen (/iː/)",       expect:"long"  },
-        { label:"need (/iː/)",       expect:"long"  },
-        { label:"please (/iː/)",     expect:"long"  },
-        { label:"beach (/iː/)",      expect:"long"  },
-        { label:"bitch (/ɪ/)",       expect:"short" },
-        { label:"seep (/iː/)",       expect:"long"  },
-        { label:"leap (/iː/)",       expect:"long"  },
-        { label:"lip (/ɪ/)",         expect:"short" },
-        { label:"complete (/iː/)",   expect:"long"  },
-        { label:"athlete (/iː/)",    expect:"long"  },
-        { label:"kin (/ɪ/)",         expect:"short" },
-        { label:"delete (/iː/)",     expect:"long"  },
-        { label:"keen (/iː/)",       expect:"long"  }
+        { label:"ship (/ɪ/)",          expect:"short" },
+        { label:"sheep (/iː/)",        expect:"long"  },
+        { label:"bit (/ɪ/)",           expect:"short" },
+        { label:"beat (/iː/)",         expect:"long"  },
+        { label:"hit (/ɪ/)",           expect:"short" },
+        { label:"heat (/iː/)",         expect:"long"  },
+        { label:"slip (/ɪ/)",          expect:"short" },
+        { label:"sleep (/iː/)",        expect:"long"  },
+        { label:"bin (/ɪ/)",           expect:"short" },
+        { label:"bean (/iː/)",         expect:"long"  },
+        { label:"been (/iː/)",         expect:"long"  },
+        { label:"sin (/ɪ/)",           expect:"short" },
+        { label:"scene (/iː/)",        expect:"long"  },
+        { label:"seen (/iː/)",         expect:"long"  },
+        { label:"need (/iː/)",         expect:"long"  },
+        { label:"please (/iː/)",       expect:"long"  },
+        { label:"beach (/iː/)",        expect:"long"  },
+        { label:"bitch (/ɪ/)",         expect:"short" },
+        { label:"seep (/iː/)",         expect:"long"  },
+        { label:"leap (/iː/)",         expect:"long"  },
+        { label:"lip (/ɪ/)",           expect:"short" },
+        { label:"complete (/iː/)",     expect:"long"  },
+        { label:"athlete (/iː/)",      expect:"long"  },
+        { label:"kin (/ɪ/)",           expect:"short" },
+        { label:"delete (/iː/)",       expect:"long"  },
+        { label:"keen (/iː/)",         expect:"long"  }
       ]
     },
+
     set2: {
       title: "Set 2 (/ɪ/ vs /eɪ/)",
       options: [
-           { label:"bit (/ɪ/)",         expect:"short" },
-        { label:"bite (/aɪ/)",       expect:"eye"   },
-        { label:"sit (/ɪ/)",         expect:"short" },
-        { label:"site (/aɪ/)",       expect:"eye"   },
-        { label:"hit (/ɪ/)",         expect:"short" },
-        { label:"height (/aɪ/)",     expect:"eye"   },
-        { label:"kit (/ɪ/)",         expect:"short" },
-        { label:"kite (/aɪ/)",       expect:"eye"   },
-        { label:"fit (/ɪ/)",         expect:"short" },
-        { label:"fight (/aɪ/)",      expect:"eye"   },
-        { label:"sin (/ɪ/)",         expect:"short" },
-        { label:"sign (/aɪ/)",       expect:"eye"   },
-        { label:"kin (/ɪ/)",         expect:"short" },
-        { label:"kind (/aɪ/)",       expect:"eye"   },
-        { label:"fin (/ɪ/)",         expect:"short" },
-        { label:"find (/aɪ/)",       expect:"eye"   },
-        { label:"bin (/ɪ/)",         expect:"short" },
-        { label:"bind (/aɪ/)",       expect:"eye"   },
-        { label:"grin (/ɪ/)",        expect:"short" },
-        { label:"grind (/aɪ/)",      expect:"eye"   },
-        { label:"resign (/aɪ/)",     expect:"eye"   },
-        { label:"confine (/aɪ/)",    expect:"eye"   },
-        { label:"align (/aɪ/)",      expect:"eye"   },
-        { label:"design (/aɪ/)",     expect:"eye"   },
-        { label:"chin (/ɪ/)",        expect:"short" }
+           { label:"bit (/ɪ/)",    expect:"short" },
+        { label:"bite (/aɪ/)",  expect:"eye"    },
+        { label:"sit (/ɪ/)",    expect:"short" },
+        { label:"site (/aɪ/)",  expect:"eye"    },
+        { label:"hit (/ɪ/)",    expect:"short" },
+        { label:"height (/aɪ/)",  expect:"eye"    },
+        { label:"kit (/ɪ/)",   expect:"short" },
+        { label:"kite (/aɪ/)", expect:"eye"    },
+        { label:"fit (/ɪ/)",    expect:"short" },
+        { label:"fight (/aɪ/)",  expect:"eye"    },
+        { label:"sin (/ɪ/)",    expect:"short" },
+        { label:"sign (/aɪ/)",  expect:"eye"    },
+        { label:"kin (/ɪ/)",    expect:"short" },
+        { label:"kind (/aɪ/)",  expect:"eye"    },
+        { label:"fin (/ɪ/)",   expect:"short" },
+        { label:"find (/aɪ/)", expect:"eye"    },
+        { label:"bin (/ɪ/)",   expect:"short" },
+        { label:"bind (/aɪ/)", expect:"eye"    },
+        { label:"grin (/ɪ/)",   expect:"short" },
+        { label:"grind (/aɪ/)", expect:"eye"    },
+        { label:"resign (/aɪ/)", expect:"eye"    },
+        { label:"confine (/aɪ/)", expect:"eye"    },
+        { label:"align (/aɪ/)", expect:"eye"    },
+        { label:"design (/aɪ/)", expect:"eye"    },
+        { label:"lin (/ɪ/)",   expect:"short" },
+        { label:"chin (/ɪ/)",   expect:"short" },
       ]
     }
   };
 
+  // ---- Audio ----
   let ctx, mic, analyser, data;
   let rafId = null;
 
@@ -486,7 +530,6 @@
   let samples = [];
   let t0 = 0;
 
-  // Student-facing mastery: 2 correct in a row
   let streak = 0;
 
   const VAD_ON = 0.03;
@@ -499,45 +542,41 @@
     set2: { shortMax: 190, longMin: 260 }
   };
 
-  // For the visual length bar (student-facing)
-  const BAR_MAX = {
-    set1: 360, // ms shown as 0-100%
-    set2: 520
-  };
+  const BAR_MAX = { set1: 360, set2: 520 };
 
-  function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
+  // ---- UI helpers ----
+  function setStatus(t){ statusEl.textContent = "Status: " + t; }
+  function setRecLabel(){ recBtn.textContent = listening ? "Stop" : "Tap to Speak"; }
+  function setStreak(n){ streak = n; streakPill.textContent = "Streak: " + streak; }
 
-  function setStreak(n){
-    streak = n;
-    streakPill.textContent = "Streak: " + streak;
+  function setResultClass(kind){
+    resultBox.className = "result " + kind;
   }
 
-  function clearResultUI(){
+  function clearResult(){
     resultBox.style.display = "none";
     verdictEl.textContent = "—";
     detailEl.textContent = "—";
-
-    resultBox.className = "result unclear";
+    masteryTag.style.display = "none";
     lengthFill.style.width = "0%";
     lengthTag.textContent = "—";
     lengthHint.textContent = "—";
-    masteryTag.style.display = "none";
+    setResultClass("unclear");
   }
 
   function populateTargets(setKey){
     targetSel.innerHTML = "";
-    SETS[setKey].options.forEach((o, idx) => {
+    SETS[setKey].options.forEach((o) => {
       const opt = document.createElement("option");
-      opt.value = o.expect;     // short | long | ay
+      opt.value = o.expect;
       opt.textContent = o.label;
       targetSel.appendChild(opt);
-      if (idx === 0) targetSel.selectedIndex = 0;
     });
 
-    if (setKey === "set1") { set1Info.style.display = ""; set2Info.style.display = "none"; }
-    else { set1Info.style.display = "none"; set2Info.style.display = ""; }
+    set1Info.style.display = (setKey === "set1") ? "" : "none";
+    set2Info.style.display = (setKey === "set2") ? "" : "none";
 
-    clearResultUI();
+    clearResult();
     setStreak(0);
   }
 
@@ -566,6 +605,7 @@
         if (t > MAX_LISTEN_MS){
           stopListening();
           analyseAndReport();
+          setRecLabel();
         }
       }
     }
@@ -579,13 +619,15 @@
   }
 
   async function initMic(){
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     mic = ctx.createMediaStreamSource(stream);
 
     analyser = ctx.createAnalyser();
     analyser.fftSize = 2048;
     data = new Uint8Array(analyser.fftSize);
+
     mic.connect(analyser);
 
     if (!rafId) tick();
@@ -594,19 +636,23 @@
     startBtn.disabled = true;
     recBtn.disabled = false;
     resetBtn.disabled = false;
+    listening = false;
+    setRecLabel();
   }
 
   function reset(){
     listening = false;
     samples = [];
-    clearResultUI();
+    clearResult();
     setStatus(startBtn.disabled ? "ready" : "not started");
+    setRecLabel();
   }
 
   async function startListening(){
     if (!ctx) return;
     await ensureAudioRunning();
-    reset();
+    samples = [];
+    clearResult();
     listening = true;
     t0 = performance.now();
     setStatus("listening… speak now");
@@ -624,7 +670,6 @@
 
     for (let i=0;i<samples.length;i++){
       const {t, rms} = samples[i];
-
       if (!inSeg && rms >= VAD_ON){
         inSeg = true;
         segStart = t;
@@ -649,20 +694,6 @@
     return "unclear";
   }
 
-  function expectedLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "—";
-  }
-
-  function heardLabel(x){
-    if (x === "short") return "SHORT";
-    if (x === "long") return "LONG";
-    if (x === "ay") return "AY";
-    return "UNCLEAR";
-  }
-
   function applyLengthBar(setKey, dur){
     const max = BAR_MAX[setKey] || 400;
     const pct = Math.max(0, Math.min(100, (dur / max) * 100));
@@ -670,69 +701,60 @@
     lengthTag.textContent = Math.round(dur) + " ms";
   }
 
-  function studentTip(setKey, expected, heard){
-    if (heard === "unclear"){
-      return "Try again. Use a steady voice and normal volume.";
-    }
+  function tip(setKey, expected, heard){
+    if (heard === "unclear") return "Try again. Use a steady voice and normal volume.";
+
     if (expected === heard){
       if (expected === "short") return "Good. Keep it quick and light.";
-      if (expected === "long") return "Good. Hold it longer and keep the sound steady.";
-      if (expected === "ay") return "Good. Keep the glide (e → i) and make it longer than /ɪ/.";
+      if (expected === "long") return "Good. Hold it longer and keep it steady.";
+      if (expected === "ay") return "Good. Make it longer and add the glide (e → i).";
       return "Good.";
     }
 
-    // Wrong but clear
     if (setKey === "set1"){
-      if (expected === "long" && heard === "short") return "Too short. Smile and hold the vowel longer.";
-      if (expected === "short" && heard === "long") return "Too long. Say it quickly without holding it.";
+      if (expected === "long") return "Too short. Smile and hold the vowel longer.";
+      return "Too long. Say it quickly without holding it.";
     } else {
-      if (expected === "ay" && heard === "short") return "Too short. Make it longer and add the glide (e → i).";
-      if (expected === "short" && heard === "ay") return "Too long. Keep it short and avoid the glide.";
+      if (expected === "ay") return "Too short. Make it longer and add the glide (e → i).";
+      return "Too long. Keep it short and avoid the glide.";
     }
-    return "Try again.";
-  }
-
-  function setResultClass(kind){
-    resultBox.className = "result " + kind;
   }
 
   function analyseAndReport(){
     const setKey = setSel.value;
-    const segs = findVoicedSegments();
+    const expected = targetSel.value;
 
+    const segs = findVoicedSegments();
     resultBox.style.display = "block";
     masteryTag.style.display = "none";
 
     if (!segs.length){
       setResultClass("unclear");
       verdictEl.textContent = "No clear sound";
-      detailEl.textContent = "Speak a little louder and keep the vowel steady.";
+      detailEl.textContent = "Speak a little louder and hold one vowel steady.";
       lengthFill.style.width = "0%";
       lengthTag.textContent = "—";
-      lengthHint.textContent = "Aim for one clear vowel sound (not whispering).";
-      setStatus("ready");
+      lengthHint.textContent = "Try again (don’t whisper).";
       setStreak(0);
+      setStatus("ready");
       return;
     }
 
-    // Longest voiced segment
     let longest = segs[0];
     for (const s of segs){
       if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
     }
-    const dur = longest[1] - longest[0];
 
-    const heard = classifyDuration(setKey, dur); // short | long | ay | unclear
-    const expected = targetSel.value;            // short | long | ay
+    const dur = longest[1] - longest[0];
+    const heard = classifyDuration(setKey, dur);
 
     applyLengthBar(setKey, dur);
 
-    // Student-facing text
     if (heard === "unclear"){
       setResultClass("unclear");
       verdictEl.textContent = "Unclear length";
-      detailEl.textContent = studentTip(setKey, expected, heard);
-      lengthHint.textContent = "Try a single clean vowel sound. Don’t whisper.";
+      detailEl.textContent = tip(setKey, expected, heard);
+      lengthHint.textContent = "Try one clean vowel sound.";
       setStreak(0);
       setStatus("ready");
       return;
@@ -741,11 +763,9 @@
     const ok = (heard === expected);
 
     if (ok){
-      // Different colour for "short correct" vs "other correct" (helps students see contrast)
       setResultClass(heard === "short" ? "shortok" : "correct");
-      verdictEl.textContent = "Correct: " + expectedLabel(expected);
-      detailEl.textContent = studentTip(setKey, expected, heard);
-
+      verdictEl.textContent = "Correct";
+      detailEl.textContent = tip(setKey, expected, heard);
       setStreak(streak + 1);
 
       if (streak >= 2){
@@ -753,66 +773,54 @@
         masteryTag.textContent = "CLEAR";
       }
 
-      lengthHint.textContent =
-        "You held the sound for the right amount of time. Try another word or keep practising.";
-
+      lengthHint.textContent = "Good length. Try another word or keep practising.";
     } else {
       setResultClass("wrong");
       verdictEl.textContent = "Not quite";
-      detailEl.textContent =
-        "Target: " + expectedLabel(expected) + " • You did: " + heardLabel(heard) + ". " +
-        studentTip(setKey, expected, heard);
-
-      lengthHint.textContent = "Use the tip above, then press Try Again and repeat.";
+      detailEl.textContent = tip(setKey, expected, heard);
+      lengthHint.textContent = "Use the tip, then Try Again.";
       setStreak(0);
     }
 
     setStatus("ready");
   }
 
-  // Events
+  // ---- Wiring ----
   setSel.addEventListener("change", () => populateTargets(setSel.value));
-  targetSel.addEventListener("change", () => {
-    clearResultUI();
-    setStreak(0);
-  });
+  targetSel.addEventListener("change", () => { clearResult(); setStreak(0); });
 
   startBtn.addEventListener("click", async () => {
     try { await initMic(); }
     catch(e){
       setStatus("microphone blocked");
-      alert("Microphone access was blocked. Please allow mic permission and reload.");
+      alert("Microphone access was blocked. Allow mic permission and reload.");
     }
   });
 
-  const holdStart = async (e) => {
+  recBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     if (!ctx) return;
-    await startListening();
-  };
 
-  const holdEnd = (e) => {
-    e.preventDefault();
-    if (!listening) return;
-    stopListening();
-    analyseAndReport();
-  };
-
-  recBtn.addEventListener("mousedown", holdStart);
-  recBtn.addEventListener("mouseup", holdEnd);
-  recBtn.addEventListener("mouseleave", holdEnd);
-
-  recBtn.addEventListener("touchstart", holdStart, {passive:false});
-  recBtn.addEventListener("touchend", holdEnd, {passive:false});
-  recBtn.addEventListener("touchcancel", holdEnd, {passive:false});
+    if (!listening){
+      await startListening();
+      setRecLabel();
+    } else {
+      stopListening();
+      analyseAndReport();
+      setRecLabel();
+    }
+  });
 
   resetBtn.addEventListener("click", reset);
 
-  // Init UI
+  // ---- Init ----
   populateTargets("set1");
   setStatus("not started");
   setStreak(0);
-})();
+  setRecLabel();
+});
+
+
 </script>
 
 </body>
