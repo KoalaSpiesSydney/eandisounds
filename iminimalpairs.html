@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Minimal Pair Checker – /iː/ vs /ɪ/ and /ɪ/ vs /eɪ/ | Modern English Australia</title>
+<title>Minimal Pair Checker – /iː/ vs /ɪ/ | Modern English Australia</title>
 
 <style>
   :root{
@@ -49,7 +49,9 @@
     font-weight:800;
     letter-spacing:2px;
     border-bottom:1px solid var(--line);
+    position:relative; /* anchors QR + Home */
   }
+
   header span{
     color:var(--ink-light);
     font-weight:300;
@@ -58,6 +60,7 @@
     letter-spacing:3px;
     margin-top:0.35rem;
   }
+
   .home-btn{
     position:absolute;
     right:12px;
@@ -70,10 +73,12 @@
     font-size:.85rem;
     text-decoration:none;
     border:1px solid rgba(255,255,255,.18);
+    z-index:65;
   }
   @media (hover:hover){
     .home-btn:hover{ background:var(--accent); border-color:transparent; color:#fff; }
   }
+
   @media (min-width:768px){
     header{ font-size:1.5rem; padding:1.2rem 1rem; }
     header span{ font-size:1rem; }
@@ -104,6 +109,66 @@
   @media (min-width:768px){
     .page-title{ font-size:20px; }
     .page-sub{ font-size:14px; }
+  }
+
+  /* ===== QR ===== */
+  .qr-wrap{
+    position:absolute;
+    left:12px;
+    top:12px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    z-index:65;
+  }
+  .qr-btn{
+    background:rgba(255,255,255,.08);
+    color:var(--ink-light);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:10px;
+    padding:.5rem .8rem;
+    font-weight:800;
+    font-size:.9rem;
+    cursor:pointer;
+    line-height:1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (hover:hover){
+    .qr-btn:hover{ background:var(--accent); border-color:transparent; color:#fff; }
+  }
+  .qr-panel{
+    display:none;
+    background:var(--card);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:14px;
+    padding:10px;
+    width:180px;
+    box-shadow:0 10px 28px rgba(0,0,0,.22);
+  }
+  .qr-panel.open{ display:block; }
+  .qr-title{
+    margin:0 0 8px;
+    color:var(--ink-light);
+    font-weight:800;
+    font-size:12px;
+    letter-spacing:.2px;
+  }
+  .qr-url{
+    margin:8px 0 0;
+    color:rgba(255,255,255,.75);
+    font-size:11px;
+    word-break:break-all;
+    line-height:1.25;
+  }
+  #qrcode{
+    width:160px;
+    height:160px;
+    background:#fff;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
   }
 
   .card{
@@ -205,7 +270,6 @@
   .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
   .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
 
-  /* Student-facing result */
   .result{
     margin-top:14px;
     padding:14px;
@@ -319,6 +383,15 @@
 <body>
 
 <header>
+  <div class="qr-wrap">
+    <button type="button" class="qr-btn" id="qrToggle" aria-expanded="false" aria-controls="qrPanel">QR</button>
+    <div class="qr-panel" id="qrPanel" role="dialog" aria-label="QR code" aria-hidden="true">
+      <p class="qr-title">Scan to open this page</p>
+      <div id="qrcode"></div>
+      <p class="qr-url" id="qrUrl"></p>
+    </div>
+  </div>
+
   <a href="index.html" class="home-btn" aria-label="Home">Home</a>
   MODERN ENGLISH AUSTRALIA
   <span>Koala Spies Sydney · Minimal Pair Checker</span>
@@ -326,7 +399,7 @@
 
 <main>
   <h1 class="page-title">Minimal Pair Checker (Microphone) — Vowel Length</h1>
-  <p class="page-sub">Choose a set and word. Tap to Speak (tap again to stop). Try to get the correct sound twice in a row.</p>
+  <p class="page-sub">Choose a word. Tap to Speak (tap again to stop). Try to get the correct sound twice in a row.</p>
 
   <div class="card">
     <div class="row">
@@ -338,14 +411,6 @@
     </div>
 
     <div class="grid">
-      <div>
-        <label for="setSel">Choose test set</label>
-        <select id="setSel">
-          <option value="set1">Set 1: /ɪ/ vs /iː/ (short vs long)</option>
-          <option value="set2">Set 2: /ɪ/ vs /eɪ/ (short vs diphthong)</option>
-        </select>
-      </div>
-
       <div>
         <label for="target">Target word (student says this)</label>
         <select id="target"></select>
@@ -382,13 +447,8 @@
   </div>
 
   <div class="card" id="set1Info">
-    <p class="section-title">Set 1 — /ɪ/ vs /iː/ (short vs long)</p>
+    <p class="section-title">/ɪ/ vs /iː/ (short vs long)</p>
     <p class="section-sub">Short /ɪ/ is quick. Long /iː/ is held longer (smile and show teeth).</p>
-  </div>
-
-  <div class="card" id="set2Info" style="display:none">
-    <p class="section-title">Set 2 — /ɪ/ vs /eɪ/ (short vs “ay”)</p>
-    <p class="section-sub">/eɪ/ is longer and has a glide. /ɪ/ stays short and steady.</p>
   </div>
 
   <div class="back-wrap">
@@ -409,6 +469,69 @@
 document.addEventListener("DOMContentLoaded", () => {
   const $ = (id) => document.getElementById(id);
 
+  // ===== QR (safe even if QRCode.js is missing) =====
+  (function initQR(){
+    const toggle = $("qrToggle");
+    const panel  = $("qrPanel");
+    const box    = $("qrcode");
+    const urlEl  = $("qrUrl");
+    if (!toggle || !panel || !box || !urlEl) return;
+
+    let made = false;
+
+    function make(){
+      const url = window.location.href;
+      urlEl.textContent = url;
+
+      box.innerHTML = "";
+
+      // If QRCode.js is loaded, use it. Otherwise show a simple fallback.
+      if (typeof window.QRCode === "function") {
+        new window.QRCode(box, { text: url, width: 160, height: 160 });
+      } else {
+        const msg = document.createElement("div");
+        msg.style.padding = "10px";
+        msg.style.fontSize = "12px";
+        msg.style.lineHeight = "1.3";
+        msg.style.textAlign = "center";
+        msg.textContent = "QRCode.js not loaded. Add the QRCode.js script to generate the QR.";
+        box.appendChild(msg);
+      }
+
+      made = true;
+    }
+
+    function open(){
+      panel.classList.add("open");
+      panel.setAttribute("aria-hidden","false");
+      toggle.setAttribute("aria-expanded","true");
+      if (!made) make();
+    }
+
+    function close(){
+      panel.classList.remove("open");
+      panel.setAttribute("aria-hidden","true");
+      toggle.setAttribute("aria-expanded","false");
+    }
+
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (panel.classList.contains("open")) close();
+      else open();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!panel.classList.contains("open")) return;
+      if (panel.contains(e.target) || toggle.contains(e.target)) return;
+      close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+  })();
+
+  // ===== Main app =====
   const startBtn   = $("startBtn");
   const recBtn     = $("recBtn");
   const resetBtn   = $("resetBtn");
@@ -418,7 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const levelFill  = $("levelFill");
   const levelTxt   = $("levelTxt");
 
-  const setSel     = $("setSel");
   const targetSel  = $("target");
 
   const resultBox  = $("resultBox");
@@ -430,15 +552,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const lengthHint = $("lengthHint");
 
   const masteryTag = $("masteryTag");
-  const set1Info   = $("set1Info");
-  const set2Info   = $("set2Info");
 
   // ---- Hard fail message if IDs don't match your HTML ----
   const required = {
     startBtn, recBtn, resetBtn, statusEl, streakPill,
-    levelFill, levelTxt, setSel, targetSel,
-    resultBox, verdictEl, detailEl, lengthFill, lengthTag, lengthHint, masteryTag,
-    set1Info, set2Info
+    levelFill, levelTxt, targetSel,
+    resultBox, verdictEl, detailEl, lengthFill, lengthTag, lengthHint, masteryTag
   };
 
   const missing = Object.entries(required).filter(([k,v]) => !v).map(([k]) => k);
@@ -452,45 +571,46 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // SETS (FIXED STRUCTURE + COMMAS)
-  // NOTE: set2 expects MUST use "ay" because classifyDuration returns "ay" for set2.
+  // ONE SET ONLY
   // =========================
-  const SETS = {
-    set1: {
-      title: "Set 1 (/ɪ/ vs /iː/)",
-      options: [
-        { label:"ship (/ɪ/)",          expect:"short" },
-        { label:"sheep (/iː/)",        expect:"long"  },
-        { label:"bit (/ɪ/)",           expect:"short" },
-        { label:"beat (/iː/)",         expect:"long"  },
-        { label:"hit (/ɪ/)",           expect:"short" },
-        { label:"heat (/iː/)",         expect:"long"  },
-        { label:"slip (/ɪ/)",          expect:"short" },
-        { label:"sleep (/iː/)",        expect:"long"  },
-        { label:"bin (/ɪ/)",           expect:"short" },
-        { label:"bean (/iː/)",         expect:"long"  },
-        { label:"been (/iː/)",         expect:"long"  },
-        { label:"sin (/ɪ/)",           expect:"short" },
-        { label:"scene (/iː/)",        expect:"long"  },
-        { label:"seen (/iː/)",         expect:"long"  },
-        { label:"need (/iː/)",         expect:"long"  },
-        { label:"please (/iː/)",       expect:"long"  },
-        { label:"beach (/iː/)",        expect:"long"  },
-        { label:"bitch (/ɪ/)",         expect:"short" },
-        { label:"seep (/iː/)",         expect:"long"  },
-        { label:"leap (/iː/)",         expect:"long"  },
-        { label:"lip (/ɪ/)",           expect:"short" },
-        { label:"complete (/iː/)",     expect:"long"  },
-        { label:"athlete (/iː/)",      expect:"long"  },
-        { label:"kin (/ɪ/)",           expect:"short" },
-        { label:"delete (/iː/)",       expect:"long"  },
-        { label:"keen (/iː/)",         expect:"long"  }
-      ]
-    }
+  const OPTIONS = [
+    { label:"ship (/ɪ/)",          expect:"short" },
+    { label:"sheep (/iː/)",        expect:"long"  },
+    { label:"bit (/ɪ/)",           expect:"short" },
+    { label:"beat (/iː/)",         expect:"long"  },
+    { label:"hit (/ɪ/)",           expect:"short" },
+    { label:"heat (/iː/)",         expect:"long"  },
+    { label:"slip (/ɪ/)",          expect:"short" },
+    { label:"sleep (/iː/)",        expect:"long"  },
+    { label:"bin (/ɪ/)",           expect:"short" },
+    { label:"bean (/iː/)",         expect:"long"  },
+    { label:"been (/iː/)",         expect:"long"  },
+    { label:"sin (/ɪ/)",           expect:"short" },
+    { label:"scene (/iː/)",        expect:"long"  },
+    { label:"seen (/iː/)",         expect:"long"  },
+    { label:"need (/iː/)",         expect:"long"  },
+    { label:"please (/iː/)",       expect:"long"  },
+    { label:"beach (/iː/)",        expect:"long"  },
+    { label:"bitch (/ɪ/)",         expect:"short" },
+    { label:"seep (/iː/)",         expect:"long"  },
+    { label:"leap (/iː/)",         expect:"long"  },
+    { label:"lip (/ɪ/)",           expect:"short" },
+    { label:"complete (/iː/)",     expect:"long"  },
+    { label:"athlete (/iː/)",      expect:"long"  },
+    { label:"kin (/ɪ/)",           expect:"short" },
+    { label:"delete (/iː/)",       expect:"long"  },
+    { label:"keen (/iː/)",         expect:"long"  }
+  ];
 
-      ]
-    }
-  };
+  function populateTargets(){
+    targetSel.innerHTML = "";
+    OPTIONS.forEach((o) => {
+      const opt = document.createElement("option");
+      opt.value = o.expect;
+      opt.textContent = o.label;
+      targetSel.appendChild(opt);
+    });
+  }
 
   // ---- Audio ----
   let ctx, mic, analyser, data;
@@ -507,12 +627,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const MIN_SEG_MS = 60;
   const MAX_LISTEN_MS = 1400;
 
-  const THRESH = {
-    set1: { shortMax: 180, longMin: 220 },
-    set2: { shortMax: 190, longMin: 260 }
-  };
-
-  const BAR_MAX = { set1: 360, set2: 520 };
+  // Thresholds for /ɪ/ vs /iː/
+  const THRESH = { shortMax: 180, longMin: 220 };
+  const BAR_MAX = 360;
 
   // ---- UI helpers ----
   function setStatus(t){ statusEl.textContent = "Status: " + t; }
@@ -532,22 +649,6 @@ document.addEventListener("DOMContentLoaded", () => {
     lengthTag.textContent = "—";
     lengthHint.textContent = "—";
     setResultClass("unclear");
-  }
-
-  function populateTargets(setKey){
-    targetSel.innerHTML = "";
-    SETS[setKey].options.forEach((o) => {
-      const opt = document.createElement("option");
-      opt.value = o.expect;
-      opt.textContent = o.label;
-      targetSel.appendChild(opt);
-    });
-
-    set1Info.style.display = (setKey === "set1") ? "" : "none";
-    set2Info.style.display = (setKey === "set2") ? "" : "none";
-
-    clearResult();
-    setStreak(0);
   }
 
   function rmsFromTimeDomain(arr){
@@ -616,6 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearResult();
     setStatus(startBtn.disabled ? "ready" : "not started");
     setRecLabel();
+    setStreak(0);
   }
 
   async function startListening(){
@@ -657,41 +759,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return segs;
   }
 
-  function classifyDuration(setKey, dur){
-    const { shortMax, longMin } = THRESH[setKey];
+  function classifyDuration(dur){
+    const { shortMax, longMin } = THRESH;
     if (dur <= shortMax) return "short";
-    if (dur >= longMin) return (setKey === "set2") ? "ay" : "long";
+    if (dur >= longMin) return "long";
     return "unclear";
   }
 
-  function applyLengthBar(setKey, dur){
-    const max = BAR_MAX[setKey] || 400;
-    const pct = Math.max(0, Math.min(100, (dur / max) * 100));
+  function applyLengthBar(dur){
+    const pct = Math.max(0, Math.min(100, (dur / BAR_MAX) * 100));
     lengthFill.style.width = pct.toFixed(1) + "%";
     lengthTag.textContent = Math.round(dur) + " ms";
   }
 
-  function tip(setKey, expected, heard){
+  function tip(expected, heard){
     if (heard === "unclear") return "Try again. Use a steady voice and normal volume.";
 
     if (expected === heard){
       if (expected === "short") return "Good. Keep it quick and light.";
-      if (expected === "long") return "Good. Hold it longer and keep it steady.";
-      if (expected === "ay") return "Good. Make it longer and add the glide (e → i).";
-      return "Good.";
+      return "Good. Smile and hold it longer and steady.";
     }
 
-    if (setKey === "set1"){
-      if (expected === "long") return "Too short. Smile and hold the vowel longer.";
-      return "Too long. Say it quickly without holding it.";
-    } else {
-      if (expected === "ay") return "Too short. Make it longer and add the glide (e → i).";
-      return "Too long. Keep it short and avoid the glide.";
-    }
+    if (expected === "long") return "Too short. Smile and hold the vowel longer.";
+    return "Too long. Say it quickly without holding it.";
   }
 
   function analyseAndReport(){
-    const setKey = setSel.value;
     const expected = targetSel.value;
 
     const segs = findVoicedSegments();
@@ -716,14 +809,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const dur = longest[1] - longest[0];
-    const heard = classifyDuration(setKey, dur);
+    const heard = classifyDuration(dur);
 
-    applyLengthBar(setKey, dur);
+    applyLengthBar(dur);
 
     if (heard === "unclear"){
       setResultClass("unclear");
       verdictEl.textContent = "Unclear length";
-      detailEl.textContent = tip(setKey, expected, heard);
+      detailEl.textContent = tip(expected, heard);
       lengthHint.textContent = "Try one clean vowel sound.";
       setStreak(0);
       setStatus("ready");
@@ -735,7 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ok){
       setResultClass(heard === "short" ? "shortok" : "correct");
       verdictEl.textContent = "Correct";
-      detailEl.textContent = tip(setKey, expected, heard);
+      detailEl.textContent = tip(expected, heard);
       setStreak(streak + 1);
 
       if (streak >= 2){
@@ -747,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       setResultClass("wrong");
       verdictEl.textContent = "Not quite";
-      detailEl.textContent = tip(setKey, expected, heard);
+      detailEl.textContent = tip(expected, heard);
       lengthHint.textContent = "Use the tip, then Try Again.";
       setStreak(0);
     }
@@ -756,7 +849,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---- Wiring ----
-  setSel.addEventListener("change", () => populateTargets(setSel.value));
   targetSel.addEventListener("change", () => { clearResult(); setStreak(0); });
 
   startBtn.addEventListener("click", async () => {
@@ -784,18 +876,16 @@ document.addEventListener("DOMContentLoaded", () => {
   resetBtn.addEventListener("click", reset);
 
   // ---- Init ----
-  populateTargets("set1");
+  populateTargets();
+  clearResult();
   setStatus("not started");
   setStreak(0);
   setRecLabel();
 });
-
-
 </script>
 
 </body>
 </html>
-
 
 
 
