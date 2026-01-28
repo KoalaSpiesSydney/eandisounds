@@ -20,7 +20,6 @@
     --line:rgba(0,0,0,.12);
     --muted:#6b737a;
 
-    /* spacing helpers */
     --max:980px;
     --pad:16px;
     --gap:12px;
@@ -41,7 +40,6 @@
     text-rendering:optimizeLegibility;
   }
 
-  /* ===== HEADER (sticky) ===== */
   header{
     position:sticky;
     top:0;
@@ -68,7 +66,6 @@
     header span{ font-size:1rem; }
   }
 
-  /* ===== MAIN (make it able to push links to bottom) ===== */
   main{
     width:100%;
     max-width:var(--max);
@@ -76,12 +73,9 @@
     padding:18px var(--pad) 24px;
     display:flex;
     flex-direction:column;
-
-    /* KEY FIX: allow main to grow so margin-top:auto can push links down */
-    flex:1;
+    flex:1; /* KEY: allows links to sit at bottom */
   }
 
-  /* Title */
   .page-title{
     margin:0 0 12px;
     font-size:18px;
@@ -89,8 +83,15 @@
     color:var(--ink);
     line-height:1.25;
   }
+  .page-sub{
+    margin:0 0 14px;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+  }
   @media (min-width:768px){
-    .page-title{ font-size:20px; margin-bottom:14px; }
+    .page-title{ font-size:20px; margin-bottom:10px; }
+    .page-sub{ font-size:14px; margin-bottom:16px; }
   }
 
   .card{
@@ -135,7 +136,6 @@
     .grid{ grid-template-columns:1fr; }
   }
 
-  /* Buttons (responsive sizing) */
   .btn{
     border:1px solid var(--line);
     background:#fff;
@@ -149,7 +149,7 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    min-height:44px;            /* good tap target */
+    min-height:44px;
     white-space:nowrap;
   }
   .btn.primary{ background:var(--accent); border-color:transparent; color:#fff; }
@@ -159,7 +159,7 @@
     .btn.primary:hover{ background:var(--accent-light); }
   }
   @media (max-width:420px){
-    .btn{ width:100%; }         /* stacked buttons on small phones */
+    .btn{ width:100%; }
   }
 
   .pill{
@@ -188,13 +188,6 @@
   }
   .meter > div{ height:100%; width:0%; background:var(--accent); }
 
-  .result{
-    margin-top:14px;
-    padding:14px;
-    border-radius:12px;
-    border:1px solid var(--line);
-    background:rgba(0,0,0,.02);
-  }
   .big{ font-size:18px; font-weight:900; margin:0 0 6px; }
   .small{ margin:0; color:var(--muted); font-size:13px; line-height:1.4; }
 
@@ -216,24 +209,83 @@
     min-height:44px;
   }
 
-  /* ===== LINKS BAR (push to bottom + tidy spacing) ===== */
+  /* Student-facing result styles */
+  .result{
+    margin-top:14px;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,.02);
+  }
+  .result.correct{ border-color:#1db954; background:#e9f8ef; }
+  .result.shortok{ border-color:#3498db; background:#eaf3fb; }
+  .result.wrong{ border-color:#e74c3c; background:#fdecea; }
+  .result.unclear{ border-color:#b9bcc1; background:#f3f4f6; }
+
+  .result-top{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+
+  .mastery{
+    display:inline-flex;
+    align-items:center;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--muted);
+    font-weight:800;
+    font-size:12px;
+    letter-spacing:.2px;
+  }
+
+  .length-wrap{
+    margin-top:10px;
+  }
+  .length-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.2px;
+    margin-bottom:6px;
+  }
+  .length-bar{
+    height:10px;
+    border-radius:999px;
+    background:#ddd;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .length-fill{
+    height:100%;
+    width:0%;
+    background:var(--accent);
+  }
+  .length-hint{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.35;
+  }
+
   .links{
-    margin-top:auto;            /* pushes to bottom of main */
+    margin-top:auto;
     padding-top:14px;
     display:flex;
     justify-content:center;
     gap:.9rem;
     flex-wrap:wrap;
-    
-
-    /* nice separation from content */
     border-top:1px solid var(--line);
   }
-  @media (max-width:420px){
-    .links{ gap:10px; }
-  }
 
-  /* ===== FOOTER ===== */
   footer{
     text-align:center;
     background:var(--card);
@@ -246,61 +298,29 @@
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; }
   }
-  .home-btn{
-  position:absolute;
-  right:12px;
-  top:12px;
-  padding:.45rem .8rem;
-  border-radius:10px;
-  background:rgba(255,255,255,.08);
-  color:var(--ink-light);
-  font-weight:800;
-  font-size:.85rem;
-  text-decoration:none;
-  border:1px solid rgba(255,255,255,.18);
-}
-
-@media (hover:hover){
-  .home-btn:hover{
-    background:var(--accent);
-    border-color:transparent;
-    color:#fff;
-  }
-}
-.back-wrap{
-  display:flex;
-  justify-content:flex-start;
-  margin-top:24px;
-}
-
-.back-btn{
-  background:#33bba6;
-}
-@media (max-width:420px){
-  .back-wrap{ justify-content:center; }
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-  <a href="index.html" class="home-btn" aria-label="Home">Home</a>
-
   MODERN ENGLISH AUSTRALIA
   <span>Koala Spies Sydney · Minimal Pair Checker</span>
 </header>
 
 <main>
   <h1 class="page-title">Minimal Pair Checker (Microphone) — Vowel Length</h1>
+  <p class="page-sub">
+    Step 1: Choose a set and word. Step 2: Hold to Speak. Step 3: Try to get the correct sound twice in a row.
+  </p>
 
   <div class="card">
     <div class="row">
       <button id="startBtn" class="btn primary">Enable Microphone</button>
       <button id="recBtn" class="btn" disabled>Hold to Speak</button>
-      <button id="resetBtn" class="btn" disabled>Reset</button>
+      <button id="resetBtn" class="btn" disabled>Try Again</button>
       <span class="pill" id="status">Status: not started</span>
+      <span class="pill" id="streakPill" aria-live="polite">Streak: 0</span>
     </div>
 
     <div class="grid">
@@ -327,26 +347,36 @@
       </div>
     </div>
 
-    <div class="result" id="resultBox" style="display:none">
-      <p class="big" id="verdict">—</p>
+    <div class="result unclear" id="resultBox" style="display:none" aria-live="polite">
+      <div class="result-top">
+        <p class="big" id="verdict">—</p>
+        <span class="mastery" id="masteryTag" style="display:none">CLEAR</span>
+      </div>
+
       <p class="small" id="detail">—</p>
+
+      <div class="length-wrap">
+        <div class="length-label">
+          <span>Length</span>
+          <span id="lengthTag">—</span>
+        </div>
+        <div class="length-bar" aria-label="vowel length bar">
+          <div class="length-fill" id="lengthFill"></div>
+        </div>
+        <div class="length-hint" id="lengthHint">—</div>
+      </div>
     </div>
   </div>
 
   <div class="card" id="set1Info">
     <p class="section-title">Set 1 — /ɪ/ vs /iː/ (short vs long)</p>
-    <p class="section-sub">Examples: ship/sheep, bit/beat, live/leave. The checker uses detected voiced duration as a proxy for vowel length.</p>
+    <p class="section-sub">Short /ɪ/ is quick. Long /iː/ is held longer (smile and show teeth).</p>
   </div>
 
   <div class="card" id="set2Info" style="display:none">
     <p class="section-title">Set 2 — /ɪ/ vs /eɪ/ (short vs “ay”)</p>
-    <p class="section-sub">Examples: bit/bait, sit/sate, hit/hate, ship/shape. The checker uses voiced duration; /eɪ/ is typically longer than /ɪ/.</p>
+    <p class="section-sub">/eɪ/ usually lasts longer and has a glide. /ɪ/ stays short and steady.</p>
   </div>
-
-  <div class="back-wrap">
-  <button class="btn back-btn" onclick="history.back()">← Back</button>
-</div>
-
 
   <div class="links">
     <a href="iminimalpairs.html" class="btn">Practice</a>
@@ -365,13 +395,23 @@
   const recBtn    = document.getElementById("recBtn");
   const resetBtn  = document.getElementById("resetBtn");
   const statusEl  = document.getElementById("status");
+  const streakPill = document.getElementById("streakPill");
+
   const levelFill = document.getElementById("levelFill");
   const levelTxt  = document.getElementById("levelTxt");
   const setSel    = document.getElementById("setSel");
   const targetSel = document.getElementById("target");
+
   const resultBox = document.getElementById("resultBox");
   const verdictEl = document.getElementById("verdict");
   const detailEl  = document.getElementById("detail");
+
+  const lengthFill = document.getElementById("lengthFill");
+  const lengthTag  = document.getElementById("lengthTag");
+  const lengthHint = document.getElementById("lengthHint");
+
+  const masteryTag = document.getElementById("masteryTag");
+
   const set1Info  = document.getElementById("set1Info");
   const set2Info  = document.getElementById("set2Info");
 
@@ -409,6 +449,9 @@
   let samples = [];
   let t0 = 0;
 
+  // Student-facing mastery: 2 correct in a row
+  let streak = 0;
+
   const VAD_ON = 0.03;
   const VAD_OFF = 0.02;
   const MIN_SEG_MS = 60;
@@ -419,13 +462,36 @@
     set2: { shortMax: 190, longMin: 260 }
   };
 
+  // For the visual length bar (student-facing)
+  const BAR_MAX = {
+    set1: 360, // ms shown as 0-100%
+    set2: 520
+  };
+
   function setStatus(txt){ statusEl.textContent = "Status: " + txt; }
+
+  function setStreak(n){
+    streak = n;
+    streakPill.textContent = "Streak: " + streak;
+  }
+
+  function clearResultUI(){
+    resultBox.style.display = "none";
+    verdictEl.textContent = "—";
+    detailEl.textContent = "—";
+
+    resultBox.className = "result unclear";
+    lengthFill.style.width = "0%";
+    lengthTag.textContent = "—";
+    lengthHint.textContent = "—";
+    masteryTag.style.display = "none";
+  }
 
   function populateTargets(setKey){
     targetSel.innerHTML = "";
     SETS[setKey].options.forEach((o, idx) => {
       const opt = document.createElement("option");
-      opt.value = o.expect;
+      opt.value = o.expect;     // short | long | ay
       opt.textContent = o.label;
       targetSel.appendChild(opt);
       if (idx === 0) targetSel.selectedIndex = 0;
@@ -434,9 +500,8 @@
     if (setKey === "set1") { set1Info.style.display = ""; set2Info.style.display = "none"; }
     else { set1Info.style.display = "none"; set2Info.style.display = ""; }
 
-    resultBox.style.display = "none";
-    verdictEl.textContent = "—";
-    detailEl.textContent = "—";
+    clearResultUI();
+    setStreak(0);
   }
 
   function rmsFromTimeDomain(arr){
@@ -497,9 +562,7 @@
   function reset(){
     listening = false;
     samples = [];
-    resultBox.style.display = "none";
-    verdictEl.textContent = "—";
-    detailEl.textContent = "—";
+    clearResultUI();
     setStatus(startBtn.disabled ? "ready" : "not started");
   }
 
@@ -514,7 +577,7 @@
 
   function stopListening(){
     listening = false;
-    setStatus("analysing…");
+    setStatus("checking…");
   }
 
   function findVoicedSegments(){
@@ -549,73 +612,132 @@
     return "unclear";
   }
 
-  function prettyLabel(label){
-    if (label === "short") return "SHORT /ɪ/";
-    if (label === "long") return "LONG /iː/";
-    if (label === "ay") return "DIPHTHONG /eɪ/";
+  function expectedLabel(x){
+    if (x === "short") return "SHORT";
+    if (x === "long") return "LONG";
+    if (x === "ay") return "AY";
+    return "—";
+  }
+
+  function heardLabel(x){
+    if (x === "short") return "SHORT";
+    if (x === "long") return "LONG";
+    if (x === "ay") return "AY";
     return "UNCLEAR";
+  }
+
+  function applyLengthBar(setKey, dur){
+    const max = BAR_MAX[setKey] || 400;
+    const pct = Math.max(0, Math.min(100, (dur / max) * 100));
+    lengthFill.style.width = pct.toFixed(1) + "%";
+    lengthTag.textContent = Math.round(dur) + " ms";
+  }
+
+  function studentTip(setKey, expected, heard){
+    if (heard === "unclear"){
+      return "Try again. Use a steady voice and normal volume.";
+    }
+    if (expected === heard){
+      if (expected === "short") return "Good. Keep it quick and light.";
+      if (expected === "long") return "Good. Hold it longer and keep the sound steady.";
+      if (expected === "ay") return "Good. Keep the glide (e → i) and make it longer than /ɪ/.";
+      return "Good.";
+    }
+
+    // Wrong but clear
+    if (setKey === "set1"){
+      if (expected === "long" && heard === "short") return "Too short. Smile and hold the vowel longer.";
+      if (expected === "short" && heard === "long") return "Too long. Say it quickly without holding it.";
+    } else {
+      if (expected === "ay" && heard === "short") return "Too short. Make it longer and add the glide (e → i).";
+      if (expected === "short" && heard === "ay") return "Too long. Keep it short and avoid the glide.";
+    }
+    return "Try again.";
+  }
+
+  function setResultClass(kind){
+    resultBox.className = "result " + kind;
   }
 
   function analyseAndReport(){
     const setKey = setSel.value;
     const segs = findVoicedSegments();
 
+    resultBox.style.display = "block";
+    masteryTag.style.display = "none";
+
     if (!segs.length){
-      resultBox.style.display = "block";
-      verdictEl.textContent = "No clear vowel detected";
-      detailEl.textContent = "Try again: speak a little louder and hold the vowel steady.";
+      setResultClass("unclear");
+      verdictEl.textContent = "No clear sound";
+      detailEl.textContent = "Speak a little louder and keep the vowel steady.";
+      lengthFill.style.width = "0%";
+      lengthTag.textContent = "—";
+      lengthHint.textContent = "Aim for one clear vowel sound (not whispering).";
       setStatus("ready");
+      setStreak(0);
       return;
     }
 
+    // Longest voiced segment
     let longest = segs[0];
     for (const s of segs){
       if ((s[1]-s[0]) > (longest[1]-longest[0])) longest = s;
     }
     const dur = longest[1] - longest[0];
 
-    const heard = classifyDuration(setKey, dur);
-    const expected = targetSel.value;
-    const expectedTxt = prettyLabel(expected);
-    const heardTxt = prettyLabel(heard);
+    const heard = classifyDuration(setKey, dur); // short | long | ay | unclear
+    const expected = targetSel.value;            // short | long | ay
 
-    let verdict;
+    applyLengthBar(setKey, dur);
+
+    // Student-facing text
     if (heard === "unclear"){
-      verdict = "Unclear length";
-    } else if (heard === expected){
-      verdict = "Correct: " + heardTxt;
-    } else {
-      verdict = "Not quite: sounded like " + heardTxt;
+      setResultClass("unclear");
+      verdictEl.textContent = "Unclear length";
+      detailEl.textContent = studentTip(setKey, expected, heard);
+      lengthHint.textContent = "Try a single clean vowel sound. Don’t whisper.";
+      setStreak(0);
+      setStatus("ready");
+      return;
     }
 
-    const { shortMax, longMin } = THRESH[setKey];
-    let conf = 0.5;
-    if (heard === "short") conf = Math.max(0.2, Math.min(0.95, (shortMax - dur) / shortMax + 0.35));
-    if (heard === "long" || heard === "ay") conf = Math.max(0.2, Math.min(0.95, (dur - longMin) / longMin + 0.35));
-    conf = Math.round(conf * 100);
+    const ok = (heard === expected);
 
-    let tip = "Try again with a steady vowel and normal volume.";
-    if (setKey === "set1"){
-      if (heard === "short") tip = "For /iː/, smile and stretch the vowel longer.";
-      if (heard === "long") tip = "For /ɪ/, keep it shorter and lighter (don’t hold it).";
+    if (ok){
+      // Different colour for "short correct" vs "other correct" (helps students see contrast)
+      setResultClass(heard === "short" ? "shortok" : "correct");
+      verdictEl.textContent = "Correct: " + expectedLabel(expected);
+      detailEl.textContent = studentTip(setKey, expected, heard);
+
+      setStreak(streak + 1);
+
+      if (streak >= 2){
+        masteryTag.style.display = "";
+        masteryTag.textContent = "CLEAR";
+      }
+
+      lengthHint.textContent =
+        "You held the sound for the right amount of time. Try another word or keep practising.";
+
     } else {
-      if (heard === "short") tip = "For /eɪ/, glide from /e/ toward /ɪ/ and keep it longer.";
-      if (heard === "ay") tip = "For /ɪ/, keep it short and avoid the glide.";
-    }
+      setResultClass("wrong");
+      verdictEl.textContent = "Not quite";
+      detailEl.textContent =
+        "Target: " + expectedLabel(expected) + " • You did: " + heardLabel(heard) + ". " +
+        studentTip(setKey, expected, heard);
 
-    resultBox.style.display = "block";
-    verdictEl.textContent = verdict;
-    detailEl.textContent =
-      `Set: ${SETS[setKey].title}. Expected: ${expectedTxt}. Detected voiced duration: ${Math.round(dur)} ms. Confidence: ${conf}%. ${tip}`;
+      lengthHint.textContent = "Use the tip above, then press Try Again and repeat.";
+      setStreak(0);
+    }
 
     setStatus("ready");
   }
 
+  // Events
   setSel.addEventListener("change", () => populateTargets(setSel.value));
   targetSel.addEventListener("change", () => {
-    resultBox.style.display = "none";
-    verdictEl.textContent = "—";
-    detailEl.textContent = "—";
+    clearResultUI();
+    setStreak(0);
   });
 
   startBtn.addEventListener("click", async () => {
@@ -649,10 +771,13 @@
 
   resetBtn.addEventListener("click", reset);
 
+  // Init UI
   populateTargets("set1");
   setStatus("not started");
+  setStreak(0);
 })();
 </script>
 
 </body>
 </html>
+
